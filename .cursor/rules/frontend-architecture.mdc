@@ -1,0 +1,48 @@
+---
+description: TaskFlow Web architecture, sources of truth, and working agreement
+alwaysApply: true
+---
+
+# Frontend Architecture
+
+## Sources of truth
+
+- Requirements and business rules: `docs/PROJECT_SPEC.md`. Standards: `docs/ENGINEERING_GUIDELINES.md`. Architecture: `docs/ARCHITECTURE.md`. Decisions: `docs/adr/`.
+- `docs/design/` (Figma prototype) is a visual reference only. When it diverges from the spec, the spec wins. If a divergence is not covered by the spec, or a color change seems worthwhile, ask the user before implementing.
+- Never port the prototype's "Preencher dados de teste" button.
+
+## Working agreement
+
+- The user is learning Angular coming from C#/.NET. Before each implementation step, explain the Angular concept and the decision involved (a .NET analogy helps), then implement, then let the user review.
+- Update `ARCHITECTURE.md` when the architecture changes; record hard-to-reverse trade-offs as a new ADR.
+
+## Structure and dependencies
+
+- `src/app/core/` app-wide singletons (api, auth, layout, theme, notifications); `src/app/shared/` app-agnostic UI and utils; `src/app/features/<feature>/` with `pages/`, `components/`, `data-access/`, `models/`.
+- Allowed imports: `features` → `core`, `shared`; `core` → `shared`; `shared` → nothing app-specific. Features never import each other.
+- Pages (smart) inject stores. Components in `components/` and `shared/ui/` are presentational: only `input()` / `output()`, no store or `HttpClient` injection.
+- HTTP lives only in API services under `data-access/` or `core/`.
+
+## Store shape
+
+```typescript
+@Injectable()
+export class BoardStore {
+  private readonly tasksApi = inject(TasksApi);
+  private readonly state = signal<BoardState>(initialBoardState);
+
+  readonly columns = computed(() => this.state().columns);
+
+  moveTask(taskId: string, target: TaskStatus, index: number): void {
+    const snapshot = this.state();
+    this.state.update((s) => applyMove(s, taskId, target, index));
+    this.tasksApi.updateStatus(taskId, target).subscribe({
+      error: () => this.state.set(snapshot),
+    });
+  }
+}
+```
+
+- Private writable signal, public read-only `computed`, mutations only through command methods.
+- RxJS only at the edges (HTTP, debounce, `switchMap`); results go into signals.
+- Board filters are read from the URL query string, never stored separately (ADR 0004).

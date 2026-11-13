@@ -1,0 +1,39 @@
+---
+description: Code quality, testing, accessibility and Git conventions for TaskFlow Web
+alwaysApply: true
+---
+
+# Code Quality
+
+## TypeScript and tooling
+
+- `strict` TypeScript and strict templates. No `any`; use `unknown` and narrow.
+- angular-eslint and Prettier must pass with no warnings. lint-staged runs both on staged files at pre-commit.
+- Comments only for constraints the code cannot show.
+
+## Testing
+
+- Unit tests with Vitest + Angular Testing Library, colocated as `*.spec.ts`. Required for stores, utilities, mappers, interceptors, guards and components with logic. No numeric coverage target.
+- Test behavior through the public API (rendered output, store signals), not private members. No real HTTP: use `provideHttpClientTesting`.
+- E2E with Playwright:
+  - `e2e/real/` runs main flows against the real API; each test registers its own user with a unique e-mail (the API cannot delete users).
+  - `e2e/mocked/` covers edge cases (`409`, `500`, expired session, long lists) with network mocks typed from the generated contract.
+  - Run `@axe-core/playwright` on each main screen in both themes.
+- Projects: Chromium desktop and Chromium mobile on every PR; Firefox and WebKit on manual or scheduled runs.
+
+## Accessibility
+
+- Every interactive element works by keyboard with visible focus.
+- Dialogs trap focus (CDK) and restore it on close.
+- Every drag-and-drop action has a keyboard alternative (quick icons, "Mover para...").
+- WCAG AA contrast in both themes.
+
+## Git
+
+- Feature branches from `dev`; PRs target `dev`. Never open PRs to `main`; the maintainer promotes `dev` → `main` manually.
+- Conventional Commits: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`, `ci:`.
+
+```text
+❌ update stuff
+✅ feat(tasks): add infinite scroll to board columns
+```

@@ -1,0 +1,51 @@
+---
+description: Angular 22 conventions for components, templates, routing, forms and styling
+globs: src/**/*.ts,src/**/*.html,src/**/*.css
+alwaysApply: false
+---
+
+# Angular Conventions
+
+- Angular 22, standalone components only (no `NgModule`), zoneless (no `zone.js`).
+- `ChangeDetectionStrategy.OnPush` on every component.
+- `inject()` instead of constructor injection.
+- Signal APIs: `input()`, `output()`, `model()`, `viewChild()`, `computed()`. Use `effect()` only for side effects that cannot be derived.
+- Built-in control flow: `@if`, `@for` (always with `track`), `@switch`. No `*ngIf` / `*ngFor`.
+- Routes are lazy (`loadComponent` / `loadChildren`); guards, resolvers and interceptors are functions. Route params reach components through `withComponentInputBinding`.
+- File names follow Angular CLI 22 defaults: kebab-case, named by content (`task-card.ts`, `board-store.ts`, `tasks-api.ts`).
+
+```typescript
+// ❌ BAD
+@Component({ selector: 'app-task-card', templateUrl: './task-card.html' })
+export class TaskCard {
+  @Input() task!: Task;
+  @Output() edit = new EventEmitter<Task>();
+  constructor(private store: BoardStore) {}
+}
+
+// ✅ GOOD
+@Component({
+  selector: 'app-task-card',
+  templateUrl: './task-card.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class TaskCard {
+  readonly task = input.required<Task>();
+  readonly edit = output<Task>();
+}
+```
+
+## Forms
+
+- Typed Reactive Forms with `nonNullable` controls. Validators mirror the API: title 3–200, description ≤ 2000, password ≥ 8, due date not in the past only when changed.
+- Labels on every control; errors linked via `aria-describedby`.
+
+## UI and styling
+
+- Build UI on Angular CDK (`Dialog`, `Overlay`, `DragDrop`, `A11yModule`); no component library.
+- Tailwind v4 utilities over theme tokens (CSS custom properties). Never write raw hex colors in templates or component styles.
+- Dark theme accent text/icons use the accent-text token (`#c179b9`), not `#a42cd6`.
+- Red only for danger, errors and overdue, always with icon and text.
+- Icons from `@lucide/angular` (not `lucide-angular`).
+- Logo: full logo on the auth card, wordmark at the top of the sidebar, symbol for favicon and mobile header. Use the optimized app assets, never the originals in `docs/design/`. Logo colors are a brand asset, exempt from the palette rule. Do not alter the logo without asking.
+- UI text is Brazilian Portuguese; code identifiers are English.
