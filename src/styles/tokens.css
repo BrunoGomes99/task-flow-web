@@ -1,0 +1,46 @@
+/*
+ * Palette from PROJECT_SPEC section 6. Status colors stay on these tones.
+ * The prototype's amber and emerald are off-palette and are not used.
+ * The danger values are the prototype's red-500 and red-400, and the only reds.
+ */
+:root {
+  --palette-background-light: #f8f4f9;
+  --palette-surface-light: #ffffff;
+  --palette-border: #e2c2c6;
+  --palette-border-strong: #dfc8d9;
+  --palette-text-strong: #2f242c;
+  --palette-secondary: #502274;
+  --palette-accent: #a42cd6;
+  --palette-accent-text: #c179b9;
+  --palette-text-on-dark: #e2c2c6;
+  --palette-danger: #ef4444;
+  --palette-danger-on-dark: #f87171;
+
+  --color-background: var(--palette-background-light);
+  --color-surface: var(--palette-surface-light);
+  --color-border: var(--palette-border);
+  --color-text: var(--palette-text-strong);
+  --color-secondary-text: var(--palette-secondary);
+  --color-accent: var(--palette-accent);
+  --color-accent-text: var(--palette-accent);
+  --color-danger: var(--palette-danger);
+  --color-focus-ring: var(--palette-accent);
+  --color-status-pending: var(--palette-secondary);
+  --color-status-in-progress: var(--palette-accent);
+  --color-status-completed: var(--palette-accent-text);
+}
+
+html.dark {
+  --color-background: var(--palette-text-strong);
+  --color-surface: var(--palette-secondary);
+  --color-border: var(--palette-accent-text);
+  --color-text: var(--palette-text-on-dark);
+  --color-secondary-text: var(--palette-accent-text);
+  --color-accent: var(--palette-accent);
+  --color-accent-text: var(--palette-accent-text);
+  --color-danger: var(--palette-danger-on-dark);
+  --color-focus-ring: var(--palette-accent-text);
+  --color-status-pending: var(--palette-border-strong);
+  --color-status-in-progress: var(--palette-accent-text);
+  --color-status-completed: var(--palette-text-on-dark);
+}

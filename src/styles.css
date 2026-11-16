@@ -1,1 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss' source(none);
+@import './styles/tokens.css';
+
+@source '.';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-border: var(--color-border);
+  --color-text: var(--color-text);
+  --color-secondary-text: var(--color-secondary-text);
+  --color-accent: var(--color-accent);
+  --color-accent-text: var(--color-accent-text);
+  --color-danger: var(--color-danger);
+  --color-focus-ring: var(--color-focus-ring);
+  --color-status-pending: var(--color-status-pending);
+  --color-status-in-progress: var(--color-status-in-progress);
+  --color-status-completed: var(--color-status-completed);
+}
+
+html {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
