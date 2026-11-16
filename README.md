@@ -2,7 +2,7 @@
 
 Angular client for the [TaskFlow API](https://github.com/BrunoGomes99/task-flow-api): register, log in, and manage your own tasks on a Kanban board.
 
-![Board, light theme](docs/design/dashboard-3-light.png)
+![Board, light theme](docs/design/logo-taskflow.png)
 
 > **Status:** requirements and architecture approved; implementation not started. The API changes the frontend depends on are being specified in task-flow-api first.
 
