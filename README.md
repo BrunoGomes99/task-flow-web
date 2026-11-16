@@ -48,13 +48,13 @@ The commands below become available once the Phase 1 setup lands.
 
 ## Documentation
 
-| Document | Content |
-|----------|---------|
-| [docs/PROJECT_SPEC.md](docs/PROJECT_SPEC.md) | Requirements and business rules |
-| [docs/ENGINEERING_GUIDELINES.md](docs/ENGINEERING_GUIDELINES.md) | Development standards and checklists |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Current architecture and diagrams |
-| [docs/adr/](docs/adr/) | Architecture decision records |
-| [docs/design/](docs/design/) | Figma prototype screenshots and code (visual reference only) |
+| Document                                                         | Content                                                      |
+| ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| [docs/PROJECT_SPEC.md](docs/PROJECT_SPEC.md)                     | Requirements and business rules                              |
+| [docs/ENGINEERING_GUIDELINES.md](docs/ENGINEERING_GUIDELINES.md) | Development standards and checklists                         |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                     | Current architecture and diagrams                            |
+| [docs/adr/](docs/adr/)                                           | Architecture decision records                                |
+| [docs/design/](docs/design/)                                     | Figma prototype screenshots and code (visual reference only) |
 
 ## Contributing
 
