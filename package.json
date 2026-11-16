@@ -10,6 +10,7 @@
     "lint": "ng lint --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "assets:logos": "node scripts/generate-logo-assets.mjs",
     "prepare": "husky"
   },
   "private": true,
@@ -43,6 +44,7 @@
     "lint-staged": "^17.6.1",
     "postcss": "^8.5.33",
     "prettier": "^3.8.1",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.3.5",
     "typescript": "~6.0.2",
     "typescript-eslint": "8.72.1",
