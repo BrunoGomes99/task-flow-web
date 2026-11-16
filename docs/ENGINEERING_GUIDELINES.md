@@ -137,13 +137,23 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 - [ ] **Manual or scheduled workflow:** E2E on Firefox and WebKit against `dev`.
 - [ ] No secrets in workflows; the CI JWT key is a test-only value.
 
-## Phase 2 to 6
+## Phase Specs
 
-Tracked in [PROJECT_SPEC.md](PROJECT_SPEC.md#8-phases); add checklists here as each phase is planned.
+Each phase is implemented step by step from its spec in [specs/](specs/README.md):
+
+- [Phase 1 — Setup](specs/phase-1-setup.md)
+- [Phase 2 — Authentication](specs/phase-2-authentication.md)
+- [Phase 3 — Shell](specs/phase-3-shell.md)
+- [Phase 4 — Board](specs/phase-4-board.md)
+- [Phase 5 — Task dialog](specs/phase-5-task-dialog.md)
+- [Phase 6 — Status changes](specs/phase-6-status-changes.md)
+
+Add a checklist here at the end of each phase, as its definition of done requires.
 
 ---
 
 ## Document History
 
+- **2026-11-16:** Links to the phase specs in `specs/`.
 - **2026-11-13:** Logo asset preparation added to Phase 1.
 - **2026-11-12:** Initial guidelines from the architecture decisions.

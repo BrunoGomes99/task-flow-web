@@ -42,6 +42,7 @@ src/app/
     layout/                 Shell: sidebar, header
     theme/                  Theme store (light/dark)
     notifications/          Toast store and outlet
+    task-summary/           Summary API and store (count per status, unfiltered)
   shared/                   Reusable, app-agnostic
     ui/                     Button, form field, dialog, confirm dialog, toast,
                             tooltip, multi-select, avatar, badge
@@ -50,7 +51,7 @@ src/app/
     auth/
       pages/                Login, register
     tasks/
-      data-access/          Tasks API, mappers, board store, summary store
+      data-access/          Tasks API, mappers, board store
       models/               Task, TaskStatus, BoardFilters
       pages/                Board page, task dialog route
       components/           Column, card, filters bar, task form
@@ -108,7 +109,9 @@ Each store is an injectable service with private writable signals, public read-o
 | `ThemeStore` | root | Current theme, persistence |
 | `ToastStore` | root | Visible toasts |
 | `BoardStore` | board route | Per-column items, page, total, loading, `hasMore` |
-| `SummaryStore` | root | Count per status (unfiltered) |
+| `SummaryStore` | root (`core/task-summary/`) | Count per status (unfiltered) |
+
+`SummaryStore` lives in `core`, not in the tasks feature: the sidebar (`core/layout/`) reads it and the board refreshes it, and `core` must not import `features`.
 
 ### Board data flow
 
@@ -211,4 +214,5 @@ See [ADR 0009](adr/0009-hybrid-e2e-against-real-api.md) for the E2E strategy.
 
 ## Document History
 
+- **2026-11-16:** `SummaryStore` moved from the tasks feature to `core/task-summary/` to respect the dependency rules. Implementation order lives in [specs/](specs/README.md).
 - **2026-11-12:** Initial target architecture.
