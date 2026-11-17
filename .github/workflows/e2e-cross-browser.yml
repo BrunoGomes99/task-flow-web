@@ -1,0 +1,79 @@
+name: E2E cross-browser
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly, Monday 12:00 UTC. GitHub runs scheduled workflows from the default branch.
+    - cron: '0 12 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: E2E (Firefox and WebKit)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Read API ref
+        id: api-ref
+        run: |
+          sha=$(tr -d '[:space:]' < api-contract/API_REF)
+          if [ -z "$sha" ]; then
+            echo "api-contract/API_REF is empty"
+            exit 1
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout task-flow-api
+        uses: actions/checkout@v4
+        with:
+          repository: BrunoGomes99/task-flow-api
+          ref: ${{ steps.api-ref.outputs.sha }}
+          path: task-flow-api
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Start API
+        working-directory: task-flow-api
+        run: |
+          compose=(docker compose -f docker-compose.yml -f "$GITHUB_WORKSPACE/ci/docker-compose.ci.yml")
+          "${compose[@]}" up -d --build taskflow.api
+          for _ in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/health/live >/dev/null; then
+              echo "API is live"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "GET http://localhost:8080/health/live did not succeed in time"
+          "${compose[@]}" logs taskflow.api
+          exit 1
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps firefox webkit
+
+      - name: E2E
+        run: npx playwright test --project=firefox --project=webkit
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-cross-browser
+          path: playwright-report
+          retention-days: 7
+          if-no-files-found: ignore
