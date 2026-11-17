@@ -27,17 +27,15 @@ Angular 22 (standalone, zoneless, signals) · TypeScript strict · Angular CDK �
 - **npm**.
 - **Docker**, to run the TaskFlow API locally.
 
-## Getting Started
+## Running locally
 
-The commands below become available once the Phase 1 setup lands.
-
-1. Start the API from the task-flow-api repository (it listens on `http://localhost:8080`):
+1. In the task-flow-api repository, start the API (it listens on `http://localhost:8080`):
 
    ```bash
    docker compose up taskflow.api
    ```
 
-2. Install and run the frontend (the dev server proxies `/api` to the local API):
+2. In this repository, install dependencies and start the dev server. `ng serve` proxies `/api` to the local API, so the browser talks only to `http://localhost:4200`:
 
    ```bash
    npm install
