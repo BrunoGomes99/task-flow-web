@@ -47,8 +47,13 @@ jobs:
       - name: Start API
         working-directory: task-flow-api
         run: |
-          docker compose up -d --build taskflow.api
-          for _ in $(seq 1 60); do
+          # Compose fails taskflow.api's depends_on while Mongo is still in its
+          # start_period (reported unhealthy after about a second). Start the
+          # dependencies first, then the API, and wait on /health/live.
+          docker compose build taskflow.api
+          docker compose up -d mongo redis
+          docker compose up -d --no-deps taskflow.api
+          for _ in $(seq 1 90); do
             if curl -fsS http://localhost:8080/health/live >/dev/null; then
               echo "API is live"
               exit 0
@@ -56,6 +61,9 @@ jobs:
             sleep 2
           done
           echo "GET http://localhost:8080/health/live did not succeed in time"
+          docker compose ps -a
+          docker compose logs mongo
+          docker compose logs redis
           docker compose logs taskflow.api
           exit 1
 
