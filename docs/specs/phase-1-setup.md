@@ -252,7 +252,7 @@ The display sizes are decided in this step from the prototype screenshots and re
 - `.github/workflows/ci.yml`, on `pull_request` to `dev` and `main`:
   1. Install with `npm ci` (Node from `.nvmrc`, npm cache).
   2. `npm run format:check`, `npm run lint`, `npm run api:types` followed by `git diff --exit-code`, `npm test`, `npm run build`.
-  3. E2E job: checkout task-flow-api at the ref in `api-contract/API_REF`; build the API image; `docker compose up -d mongo redis`, then `docker compose up -d --no-deps taskflow.api`. Compose reports Mongo unhealthy during its `start_period` when the API's `depends_on` waits for it, so the dependencies are started first. The API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development; JWT settings come from the image's `appsettings.json`. Wait for `GET http://localhost:8080/health/live`; install Playwright browsers; run `npm run e2e` on the two Chromium projects; upload the Playwright report on failure.
+  3. E2E job: checkout task-flow-api at the ref in `api-contract/API_REF`; run `docker compose up -d --build taskflow.api` with one extra setting on Mongo, `GLIBC_TUNABLES=glibc.pthread.rseq=1`. `mongo:8.0.30` exits on the GitHub-hosted kernel because Ubuntu reports it as `7.0.0` (SERVER-121912). The API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development; JWT settings come from the image's `appsettings.json`. Wait for `GET http://localhost:8080/health/live`; install Playwright browsers; run `npm run e2e` on the two Chromium projects; upload the Playwright report on failure.
 - `.github/workflows/e2e-cross-browser.yml`: `workflow_dispatch` only, running Firefox and WebKit against `dev`.
 - No secrets in the workflows.
 
