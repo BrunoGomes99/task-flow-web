@@ -118,24 +118,24 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 
 ## Phase 1 — Setup
 
-- [ ] Node 24 LTS installed.
-- [ ] `dev` branch created.
-- [ ] Angular 22 workspace (zoneless, strict, no SSR, Vitest).
-- [ ] Tailwind v4, design tokens and theme bootstrap.
-- [ ] angular-eslint, Prettier, lint-staged.
-- [ ] `@lucide/angular`, Angular CDK.
-- [ ] Logo assets: originals stay in `docs/design/`; the app gets versions resized to their display size (1x and 2x), as WebP with PNG fallback. The symbol is cropped from the full logo to produce the favicon and the mobile header icon.
-- [ ] Dev proxy to the local API.
-- [ ] `api-contract/openapi.json` snapshot, `api-contract/API_REF`, and the npm script that refreshes the snapshot and regenerates the types.
-- [ ] Playwright with Chromium desktop and Chromium mobile projects, and `@axe-core/playwright`.
-- [ ] CI workflow (see below).
+- [x] Node 24 LTS installed.
+- [x] `dev` branch created.
+- [x] Angular 22 workspace (zoneless, strict, no SSR, Vitest).
+- [x] Tailwind v4, design tokens and theme bootstrap.
+- [x] angular-eslint, Prettier, lint-staged.
+- [x] `@lucide/angular`, Angular CDK.
+- [x] Logo assets: originals stay in `docs/design/`; the app gets versions resized to their display size (1x and 2x), as WebP with PNG fallback. The symbol is cropped from the full logo to produce the favicon and the mobile header icon.
+- [x] Dev proxy to the local API.
+- [x] `api-contract/openapi.json` snapshot, `api-contract/API_REF`, and the npm script that refreshes the snapshot and regenerates the types.
+- [x] Playwright with Chromium desktop and Chromium mobile projects, and `@axe-core/playwright`.
+- [x] CI workflow (see below).
 
 ## CI (GitHub Actions)
 
-- [ ] **On PR to `dev` and to `main`:** install, lint, unit tests, build, E2E (Chromium desktop and mobile).
-- [ ] **E2E API:** checkout `task-flow-api` at the ref in `api-contract/API_REF`; `docker compose up taskflow.api` (starts only API, MongoDB, Redis; the API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development); wait for `GET /health/live`.
-- [ ] **Manual workflow:** E2E on Firefox and WebKit against `dev`, started with `workflow_dispatch`.
-- [ ] No secrets in workflows.
+- [x] **On PR to `dev` and to `main`:** install, lint, unit tests, build, E2E (Chromium desktop and mobile).
+- [x] **E2E API:** checkout `task-flow-api` at the ref in `api-contract/API_REF`; `docker compose up taskflow.api` (starts only API, MongoDB, Redis; the API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development); wait for `GET /health/live`.
+- [x] **Manual workflow:** E2E on Firefox and WebKit against `dev`, started with `workflow_dispatch`.
+- [x] No secrets in workflows.
 
 ## Phase Specs
 
@@ -154,7 +154,7 @@ Add a checklist here at the end of each phase, as its definition of done require
 
 ## Document History
 
-- **2026-11-17:** CI uses the API `docker-compose.yml` as-is. Cross-browser E2E is manual only.
+- **2026-11-17:** Phase 1 and CI checkboxes ticked. CI uses the API `docker-compose.yml` as-is. Cross-browser E2E is manual only.
 - **2026-11-16:** Links to the phase specs in `specs/`.
 - **2026-11-13:** Logo asset preparation added to Phase 1.
 - **2026-11-12:** Initial guidelines from the architecture decisions.

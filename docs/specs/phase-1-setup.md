@@ -282,7 +282,7 @@ The display sizes are decided in this step from the prototype screenshots and re
 
 ## Definition of Done
 
-- [ ] All steps committed and reviewed.
-- [ ] `npm run lint`, `npm run format:check`, `npm test`, `npm run build` and `npm run e2e` pass locally.
+- [x] All steps committed and reviewed.
+- [x] `npm run lint`, `npm run format:check`, `npm test`, `npm run build` and `npm run e2e` pass locally.
 - [ ] CI green on the PR to `dev`.
-- [ ] `ARCHITECTURE.md` and `ENGINEERING_GUIDELINES.md` updated; new ADR if a hard-to-reverse decision was made.
+- [x] `ARCHITECTURE.md` and `ENGINEERING_GUIDELINES.md` updated; no new ADR (the CI follow-up is in ADR 0009).
