@@ -133,7 +133,7 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 ## CI (GitHub Actions)
 
 - [x] **On PR to `dev` and to `main`:** install, lint, unit tests, build, E2E (Chromium desktop and mobile).
-- [x] **E2E API:** checkout `task-flow-api` at the ref in `api-contract/API_REF`; `docker compose up taskflow.api` (API, MongoDB, Redis). Mongo gets `GLIBC_TUNABLES=glibc.pthread.rseq=1` so `mongo:8.0.30` starts on the GitHub-hosted kernel (SERVER-121912). The API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development. Wait for `GET /health/live`.
+- [x] **E2E API:** checkout `task-flow-api` at the ref in `api-contract/API_REF`; `docker compose up taskflow.api` (API, MongoDB, Redis). The API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development. Wait for `GET /health/live`.
 - [x] **Manual workflow:** E2E on Firefox and WebKit against `dev`, started with `workflow_dispatch`.
 - [x] No secrets in workflows.
 

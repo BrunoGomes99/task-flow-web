@@ -47,17 +47,7 @@ jobs:
       - name: Start API
         working-directory: task-flow-api
         run: |
-          # mongo:8.0.30 exits on GitHub-hosted runners: Ubuntu reports the kernel
-          # as 7.0.0, and that release refuses kernels from 6.19 up (SERVER-121912).
-          # glibc.pthread.rseq=1 is the upstream workaround and overrides the image default.
-          printf '%s\n' \
-            'services:' \
-            '  mongo:' \
-            '    environment:' \
-            '      GLIBC_TUNABLES: glibc.pthread.rseq=1' \
-            > /tmp/ci-mongo.yml
-          compose=(docker compose -f docker-compose.yml -f /tmp/ci-mongo.yml)
-          "${compose[@]}" up -d --build taskflow.api
+          docker compose up -d --build taskflow.api
           for _ in $(seq 1 90); do
             if curl -fsS http://localhost:8080/health/live >/dev/null; then
               echo "API is live"
@@ -66,9 +56,9 @@ jobs:
             sleep 2
           done
           echo "GET http://localhost:8080/health/live did not succeed in time"
-          "${compose[@]}" ps -a
-          "${compose[@]}" logs mongo
-          "${compose[@]}" logs taskflow.api
+          docker compose ps -a
+          docker compose logs mongo
+          docker compose logs taskflow.api
           exit 1
 
       - name: Install Playwright browsers
