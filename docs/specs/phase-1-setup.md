@@ -284,5 +284,5 @@ The display sizes are decided in this step from the prototype screenshots and re
 
 - [x] All steps committed and reviewed.
 - [x] `npm run lint`, `npm run format:check`, `npm test`, `npm run build` and `npm run e2e` pass locally.
-- [ ] CI green on the PR to `dev`.
+- [x] CI green on the PR to `dev`.
 - [x] `ARCHITECTURE.md` and `ENGINEERING_GUIDELINES.md` updated; no new ADR (the CI follow-up is in ADR 0009).
