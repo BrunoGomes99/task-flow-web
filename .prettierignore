@@ -1,0 +1,25 @@
+# Build output
+dist
+coverage
+.angular
+out-tsc
+tmp
+
+# Generated
+package-lock.json
+
+# Generated from the OpenAPI snapshot (phase 1, step 1.7)
+src/app/core/api/generated
+
+# Specs and design references stay as authored
+docs
+
+# Local agent tooling, not part of the app
+.agents
+skills-lock.json
+
+# Playwright output
+test-results
+playwright-report
+blob-report
+playwright/.cache

@@ -7,13 +7,14 @@ alwaysApply: true
 
 ## Sources of truth
 
-- Requirements and business rules: `docs/PROJECT_SPEC.md`. Standards: `docs/ENGINEERING_GUIDELINES.md`. Architecture: `docs/ARCHITECTURE.md`. Decisions: `docs/adr/`.
+- Requirements and business rules: `docs/PROJECT_SPEC.md`. Standards: `docs/ENGINEERING_GUIDELINES.md`. Architecture: `docs/ARCHITECTURE.md`. Decisions: `docs/adr/`. Implementation order: `docs/specs/` (one spec per phase, split into steps).
 - `docs/design/` (Figma prototype) is a visual reference only. When it diverges from the spec, the spec wins. If a divergence is not covered by the spec, or a color change seems worthwhile, ask the user before implementing.
 - Never port the prototype's "Preencher dados de teste" button.
 
 ## Working agreement
 
 - The user is learning Angular coming from C#/.NET. Before each implementation step, explain the Angular concept and the decision involved (a .NET analogy helps), then implement, then let the user review.
+- Implement one spec step at a time, following the step protocol in `docs/specs/README.md`: explain, implement only that step, verify, summarize, commit, and stop for review. Never implement several steps or a whole phase at once.
 - Update `ARCHITECTURE.md` when the architecture changes; record hard-to-reverse trade-offs as a new ADR.
 
 ## Structure and dependencies
