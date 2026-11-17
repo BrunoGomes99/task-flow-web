@@ -133,9 +133,9 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 ## CI (GitHub Actions)
 
 - [ ] **On PR to `dev` and to `main`:** install, lint, unit tests, build, E2E (Chromium desktop and mobile).
-- [ ] **E2E API:** checkout `task-flow-api` at the ref in `api-contract/API_REF`; `docker compose up taskflow.api` (starts only API, MongoDB, Redis); a CI-only compose override provides the JWT settings via environment variables (the default override mounts Windows User Secrets, which do not exist on Linux); wait for `GET /health/live`.
-- [ ] **Manual or scheduled workflow:** E2E on Firefox and WebKit against `dev`.
-- [ ] No secrets in workflows; the CI JWT key is a test-only value.
+- [ ] **E2E API:** checkout `task-flow-api` at the ref in `api-contract/API_REF`; `docker compose up taskflow.api` (starts only API, MongoDB, Redis; the API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development); wait for `GET /health/live`.
+- [ ] **Manual workflow:** E2E on Firefox and WebKit against `dev`, started with `workflow_dispatch`.
+- [ ] No secrets in workflows.
 
 ## Phase Specs
 
@@ -154,6 +154,7 @@ Add a checklist here at the end of each phase, as its definition of done require
 
 ## Document History
 
+- **2026-11-17:** CI uses the API `docker-compose.yml` as-is. Cross-browser E2E is manual only.
 - **2026-11-16:** Links to the phase specs in `specs/`.
 - **2026-11-13:** Logo asset preparation added to Phase 1.
 - **2026-11-12:** Initial guidelines from the architecture decisions.

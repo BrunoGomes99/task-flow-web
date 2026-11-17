@@ -246,20 +246,19 @@ The display sizes are decided in this step from the prototype screenshots and re
 
 **Goal:** every PR to `dev` or `main` is linted, tested, built and checked end to end against the API version in `API_REF`.
 
-**Concepts to explain:** GitHub Actions jobs and steps (compare with Azure DevOps pipelines); checking out a second repository; compose overrides for CI.
+**Concepts to explain:** GitHub Actions jobs and steps (compare with Azure DevOps pipelines); checking out a second repository.
 
 **Deliverables:**
 - `.github/workflows/ci.yml`, on `pull_request` to `dev` and `main`:
   1. Install with `npm ci` (Node from `.nvmrc`, npm cache).
   2. `npm run format:check`, `npm run lint`, `npm run api:types` followed by `git diff --exit-code`, `npm test`, `npm run build`.
-  3. E2E job: checkout task-flow-api at the ref in `api-contract/API_REF`; run `docker compose -f docker-compose.yml -f <ci override> up -d taskflow.api`; wait for `GET http://localhost:8080/health/live`; install Playwright browsers; run `npm run e2e` on the two Chromium projects; upload the Playwright report on failure.
-- `ci/docker-compose.ci.yml` in this repository: publishes port `8080` and sets the JWT settings through environment variables with a test-only key (no User Secrets volume).
-- `.github/workflows/e2e-cross-browser.yml`: `workflow_dispatch` and a weekly schedule, running Firefox and WebKit against `dev`.
+  3. E2E job: checkout task-flow-api at the ref in `api-contract/API_REF`; run `docker compose up -d --build taskflow.api` (the API compose file publishes port `8080` and defaults `ASPNETCORE_ENVIRONMENT` to Development; JWT settings come from the image's `appsettings.json`); wait for `GET http://localhost:8080/health/live`; install Playwright browsers; run `npm run e2e` on the two Chromium projects; upload the Playwright report on failure.
+- `.github/workflows/e2e-cross-browser.yml`: `workflow_dispatch` only, running Firefox and WebKit against `dev`.
 - No secrets in the workflows.
 
 **Acceptance criteria:**
 - The CI run on the phase PR is green.
-- The JWT configuration keys match the API's options (checked against task-flow-api `appsettings.json`).
+- The E2E job starts the API with the checked-out `docker-compose.yml` alone.
 
 **Tests:** the workflow itself.
 

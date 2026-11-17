@@ -2,9 +2,6 @@ name: E2E cross-browser
 
 on:
   workflow_dispatch:
-  schedule:
-    # Weekly, Monday 12:00 UTC. GitHub runs scheduled workflows from the default branch.
-    - cron: '0 12 * * 1'
 
 permissions:
   contents: read
@@ -50,8 +47,7 @@ jobs:
       - name: Start API
         working-directory: task-flow-api
         run: |
-          compose=(docker compose -f docker-compose.yml -f "$GITHUB_WORKSPACE/ci/docker-compose.ci.yml")
-          "${compose[@]}" up -d --build taskflow.api
+          docker compose up -d --build taskflow.api
           for _ in $(seq 1 60); do
             if curl -fsS http://localhost:8080/health/live >/dev/null; then
               echo "API is live"
@@ -60,7 +56,7 @@ jobs:
             sleep 2
           done
           echo "GET http://localhost:8080/health/live did not succeed in time"
-          "${compose[@]}" logs taskflow.api
+          docker compose logs taskflow.api
           exit 1
 
       - name: Install Playwright browsers
