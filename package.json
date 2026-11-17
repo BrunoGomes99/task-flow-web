@@ -11,6 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "assets:logos": "node scripts/generate-logo-assets.mjs",
+    "api:types": "openapi-typescript api-contract/openapi.json -o src/app/core/api/generated/api-types.ts",
+    "api:refresh": "node scripts/refresh-api-contract.mjs",
     "prepare": "husky"
   },
   "private": true,
@@ -42,19 +44,14 @@
     "husky": "^9.1.7",
     "jsdom": "^30.0.0",
     "lint-staged": "^17.6.1",
+    "openapi-typescript": "^7.13.0",
     "postcss": "^8.5.33",
     "prettier": "^3.8.1",
     "sharp": "^0.35.5",
     "tailwindcss": "^4.3.5",
     "typescript": "~6.0.2",
     "typescript-eslint": "8.72.1",
+    "vite": "^8.3.8",
     "vitest": "^5.0.0"
-  },
-  "lint-staged": {
-    "*.{ts,html}": [
-      "eslint --max-warnings=0 --fix",
-      "prettier --write"
-    ],
-    "*.{css,js,mjs,cjs,json,md}": "prettier --write"
   }
 }

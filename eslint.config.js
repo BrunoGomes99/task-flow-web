@@ -71,7 +71,14 @@ function featureBoundaryConfigs() {
 
 module.exports = defineConfig([
   {
-    ignores: ['dist/**', 'coverage/**', '.angular/**', 'out-tsc/**', 'tmp/**'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      '.angular/**',
+      'out-tsc/**',
+      'tmp/**',
+      'src/app/core/api/generated/**',
+    ],
   },
   {
     files: ['**/*.ts'],
