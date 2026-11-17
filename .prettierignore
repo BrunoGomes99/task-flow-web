@@ -17,3 +17,9 @@ docs
 # Local agent tooling, not part of the app
 .agents
 skills-lock.json
+
+# Playwright output
+test-results
+playwright-report
+blob-report
+playwright/.cache
