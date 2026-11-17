@@ -2,7 +2,7 @@
 
 This document explains the architecture of the TaskFlow SPA and how its parts fit together. It describes the **current** architecture; update it whenever the architecture changes. The reasons behind individual decisions are in [adr/](adr/).
 
-> **Status (2026-11-12):** approved target architecture. No application code exists yet.
+> **Status (2026-11-17):** Phase 1 workspace exists. The app boots with routing, `provideHttpClient`, and the `API_BASE_URL` token. `core/api` holds the generated contract types. Design tokens, the dev proxy, unit and E2E runners, and CI are in place. Stores, screens, interceptors and guards below are the target for phases 2 to 6. Phase 1 found no deviation from this target. The CI follow-up (no frontend compose override; Firefox and WebKit only on manual dispatch) is recorded in [ADR 0009](adr/0009-hybrid-e2e-against-real-api.md).
 
 ---
 
@@ -42,6 +42,7 @@ src/app/
     layout/                 Shell: sidebar, header
     theme/                  Theme store (light/dark)
     notifications/          Toast store and outlet
+    task-summary/           Summary API and store (count per status, unfiltered)
   shared/                   Reusable, app-agnostic
     ui/                     Button, form field, dialog, confirm dialog, toast,
                             tooltip, multi-select, avatar, badge
@@ -50,7 +51,7 @@ src/app/
     auth/
       pages/                Login, register
     tasks/
-      data-access/          Tasks API, mappers, board store, summary store
+      data-access/          Tasks API, mappers, board store
       models/               Task, TaskStatus, BoardFilters
       pages/                Board page, task dialog route
       components/           Column, card, filters bar, task form
@@ -61,6 +62,8 @@ e2e/
   real/                     Flows against the real API
   mocked/                   Edge cases with mocked network
 ```
+
+After Phase 1, `core/api` contains the generated types, the DTO re-exports and `API_BASE_URL`. `shared/`, `features/` and the other `core/` folders are the target layout; empty ones are kept with `.gitkeep`. `e2e/mocked` has the accessibility smoke test. `e2e/real` is empty until Phase 2.
 
 ### Dependency rules
 
@@ -108,7 +111,9 @@ Each store is an injectable service with private writable signals, public read-o
 | `ThemeStore` | root | Current theme, persistence |
 | `ToastStore` | root | Visible toasts |
 | `BoardStore` | board route | Per-column items, page, total, loading, `hasMore` |
-| `SummaryStore` | root | Count per status (unfiltered) |
+| `SummaryStore` | root (`core/task-summary/`) | Count per status (unfiltered) |
+
+`SummaryStore` lives in `core`, not in the tasks feature: the sidebar (`core/layout/`) reads it and the board refreshes it, and `core` must not import `features`.
 
 ### Board data flow
 
@@ -205,10 +210,12 @@ flowchart LR
   end
 ```
 
-See [ADR 0009](adr/0009-hybrid-e2e-against-real-api.md) for the E2E strategy.
+See [ADR 0009](adr/0009-hybrid-e2e-against-real-api.md) for the E2E strategy. The pull-request workflow runs Chromium desktop and mobile against task-flow-api at `API_REF`, using that repo's `docker-compose.yml` (port `8080`, Development by default). Firefox and WebKit run only from the manual cross-browser workflow.
 
 ---
 
 ## Document History
 
+- **2026-11-17:** Phase 1 workspace exists. No deviation from the target architecture. CI notes are in section 8.
+- **2026-11-16:** `SummaryStore` moved from the tasks feature to `core/task-summary/` to respect the dependency rules. Implementation order lives in [specs/](specs/README.md).
 - **2026-11-12:** Initial target architecture.

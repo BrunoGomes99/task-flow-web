@@ -190,9 +190,11 @@ These API changes are specified and implemented **in the task-flow-api repositor
 
 ## 8. Phases
 
+Each phase from 1 to 6 has an implementation spec in [specs/](specs/README.md), split into steps that are implemented, explained, committed and reviewed one at a time.
+
 | Phase | Scope |
 |-------|-------|
-| 0 — Backend prerequisites | Section 7, in task-flow-api |
+| 0 — Backend prerequisites | Section 7, in task-flow-api (done) |
 | 1 — Setup | Angular workspace, tooling, theme tokens, CI, OpenAPI types, docs |
 | 2 — Authentication | Login, register, session, guards, interceptors |
 | 3 — Shell | Layout, sidebar, header, theme toggle, toasts |
@@ -215,5 +217,6 @@ These API changes are specified and implemented **in the task-flow-api repositor
 
 ## 10. Document History
 
+- **2026-11-16:** Phase 0 marked as done; phase specs linked in section 8.
 - **2026-11-13:** Added the TaskFlow logo: full logo on the auth card, wordmark in the sidebar, symbol as favicon and mobile header icon.
 - **2026-11-12:** Initial specification, consolidated from the requirements discussion, the prototype review, and the architecture decisions.
