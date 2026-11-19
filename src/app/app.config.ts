@@ -5,7 +5,7 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { API_BASE_URL } from './core/api/api-base-url';
@@ -16,7 +16,7 @@ import { SessionStore } from './core/auth/session-store';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, errorInterceptor])),
     { provide: API_BASE_URL, useValue: environment.apiBaseUrl },
     provideAppInitializer(() => inject(SessionStore).restore()),
