@@ -24,6 +24,7 @@ describe('LoginPage', () => {
 
     expect(screen.queryByText('O e-mail é obrigatório.')).not.toBeInTheDocument();
     expect(screen.queryByText(/preencher dados de teste/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ativar tema escuro' })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /acessar dashboard/i }));
 

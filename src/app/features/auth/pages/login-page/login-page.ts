@@ -15,6 +15,7 @@ import { LucideChevronRight } from '@lucide/angular';
 import { ApiError } from '@core/api/api-error';
 import { API_ERROR_CODES } from '@core/api/error-codes';
 import { SessionStore } from '@core/auth/session-store';
+import { ThemeToggle } from '@core/theme/theme-toggle/theme-toggle';
 import { Alert } from '@shared/ui/alert/alert';
 import { Button } from '@shared/ui/button/button';
 import { FormField, FormFieldControl } from '@shared/ui/form-field/form-field';
@@ -41,6 +42,7 @@ interface LoginForm {
     FormFieldControl,
     Alert,
     Button,
+    ThemeToggle,
     LucideChevronRight,
   ],
   templateUrl: './login-page.html',
