@@ -58,20 +58,20 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 
 ### API integration
 
-- [ ] **Generated contract** — DTO types come from `openapi-typescript`; they are never edited by hand.
-- [ ] **Mapping layer** — API services map DTOs to frontend models (e.g. ISO strings to local dates); components never see DTOs.
-- [ ] **Dev proxy** — the dev server proxies `/api` to the local API; the production base URL comes from `environment` files.
-- [ ] **Auth interceptor** — adds `Authorization: Bearer <token>` only to TaskFlow API requests.
-- [ ] **Error interceptor** — converts `ProblemDetails` into a typed `ApiError` (`status`, `code`, field `errors`); `401` triggers logout.
-- [ ] **Validation errors** — `ValidationProblemDetails.errors` keys are PascalCase (`Title`); map them to form control names (`title`).
-- [ ] **Error codes** — logic branches on `extensions.code` (e.g. `task.status_transition_invalid`), never on message text.
+- [x] **Generated contract** — DTO types come from `openapi-typescript`; they are never edited by hand.
+- [x] **Mapping layer** — API services map DTOs to frontend models (e.g. ISO strings to local dates); components never see DTOs.
+- [x] **Dev proxy** — the dev server proxies `/api` to the local API; the production base URL comes from `environment` files.
+- [x] **Auth interceptor** — adds `Authorization: Bearer <token>` only to TaskFlow API requests.
+- [x] **Error interceptor** — converts `ProblemDetails` into a typed `ApiError` (`status`, `code`, field `errors`); `401` triggers logout.
+- [x] **Validation errors** — `ValidationProblemDetails.errors` keys are PascalCase (`Title`); map them to form control names (`title`).
+- [x] **Error codes** — logic branches on `extensions.code` (e.g. `task.status_transition_invalid`), never on message text.
 - [ ] **Pagination** — `pageSize` is at most 20.
 
 ### Forms
 
-- [ ] Typed Reactive Forms (`FormGroup<...>`, `nonNullable` controls).
+- [x] Typed Reactive Forms (`FormGroup<...>`, `nonNullable` controls).
 - [ ] Client validators mirror the API rules (title 3–200, description ≤ 2000, password ≥ 8, due date not in the past when changed).
-- [ ] Server validation errors are applied to the matching controls.
+- [x] Server validation errors are applied to the matching controls.
 
 ### Dates
 
@@ -130,6 +130,19 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 - [x] Playwright with Chromium desktop and Chromium mobile projects, and `@axe-core/playwright`.
 - [x] CI workflow (see below).
 
+## Phase 2 — Authentication
+
+- [x] `ApiError` and the error interceptor. PascalCase validation keys become camelCase control names.
+- [x] Auth API service and mappers. Components and the session store do not import auth DTOs.
+- [x] Session store. `taskflow.session` holds `{ accessToken, expiresAt }`. The profile is reloaded from `GET /api/users/me`. Logout runs at `expiresAt` and on a `401` whose request carried the token.
+- [x] Auth interceptor. The bearer token is sent only to the TaskFlow API.
+- [x] Login `401` stays a form error ("E-mail ou senha inválidos.").
+- [x] `authGuard` and `guestGuard`. Lazy `/login`, `/register` and a placeholder `/tasks`.
+- [x] Register and login use typed Reactive Forms. Password is at least 8 characters. Server field errors are applied to the matching controls. Notices travel in the navigation state (`registered`, `sessionExpired`).
+- [x] Button, form field, alert and auth card. No "Preencher dados de teste" button.
+- [x] E2E against the real API for register and login, each with a unique e-mail. Mocked network for the expired session and the guards. Axe on `/login` and `/register` in both themes.
+- [x] Dark secondary text uses `#e2c2c6`, the palette text color that meets WCAG AA on the `#502274` surface.
+
 ## CI (GitHub Actions)
 
 - [x] **On PR to `dev` and to `main`:** install, lint, unit tests, build, E2E (Chromium desktop and mobile).
@@ -154,6 +167,7 @@ Add a checklist here at the end of each phase, as its definition of done require
 
 ## Document History
 
+- **2026-11-23:** Phase 2 checklist added. API integration and forms boxes ticked where the auth work made them true. Pagination and the task field validators stay open.
 - **2026-11-17:** Phase 1 and CI checkboxes ticked. CI uses the API `docker-compose.yml` as-is. Cross-browser E2E is manual only.
 - **2026-11-16:** Links to the phase specs in `specs/`.
 - **2026-11-13:** Logo asset preparation added to Phase 1.

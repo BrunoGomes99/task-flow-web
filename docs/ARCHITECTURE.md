@@ -2,7 +2,7 @@
 
 This document explains the architecture of the TaskFlow SPA and how its parts fit together. It describes the **current** architecture; update it whenever the architecture changes. The reasons behind individual decisions are in [adr/](adr/).
 
-> **Status (2026-11-17):** Phase 1 workspace exists. The app boots with routing, `provideHttpClient`, and the `API_BASE_URL` token. `core/api` holds the generated contract types. Design tokens, the dev proxy, unit and E2E runners, and CI are in place. Stores, screens, interceptors and guards below are the target for phases 2 to 6. Phase 1 found no deviation from this target. The CI follow-up (no frontend compose override; Firefox and WebKit only on manual dispatch) is recorded in [ADR 0009](adr/0009-hybrid-e2e-against-real-api.md).
+> **Status (2026-11-23):** Phase 2 authentication is in place: register, login, session restore, guards, and the HTTP error pipeline. `/tasks` is a placeholder until the shell (Phase 3) and the board (Phase 4). Two details differ from the first draft of section 5 and are written there: a `401` logs the user out only when the request carried the session token, and the "account created" and "session expired" notices travel in the router navigation state. The CI follow-up (no frontend compose override; Firefox and WebKit only on manual dispatch) stays in [ADR 0009](adr/0009-hybrid-e2e-against-real-api.md).
 
 ---
 
@@ -63,7 +63,7 @@ e2e/
   mocked/                   Edge cases with mocked network
 ```
 
-After Phase 1, `core/api` contains the generated types, the DTO re-exports and `API_BASE_URL`. `shared/`, `features/` and the other `core/` folders are the target layout; empty ones are kept with `.gitkeep`. `e2e/mocked` has the accessibility smoke test. `e2e/real` is empty until Phase 2.
+After Phase 2, `core/api` has the generated types, `ApiError`, the error interceptor and the error codes. `core/auth` has the session store, the auth API and mappers, the auth interceptor and the guards. `features/auth` has the login and register pages. `shared/ui` has the button, form field and alert. `shared/utils` has `applyServerErrors`. `features/tasks` has the placeholder board. `e2e/real` covers register and login. `e2e/mocked` covers the expired session, the guards and axe on the auth screens. `core/layout`, `core/theme`, `core/notifications` and the real board are still the target for later phases.
 
 ### Dependency rules
 
@@ -165,12 +165,14 @@ flowchart LR
   AuthInt -->|"adds Bearer token"| ErrInt[errorInterceptor]
   ErrInt --> Backend[TaskFlow API]
   ErrInt -->|"ProblemDetails to ApiError"| Service
-  ErrInt -->|"401"| Session[SessionStore.logout]
+  ErrInt -->|"401 with Authorization"| Session["SessionStore.logout('expired')"]
 ```
 
 - Types are generated from `api-contract/openapi.json` ([ADR 0006](adr/0006-api-types-from-versioned-openapi-snapshot.md)); API services map DTOs to models.
-- The session is kept in `localStorage` ([ADR 0007](adr/0007-jwt-in-local-storage-without-refresh.md)): on login the store saves the token and `expiresAt = now + expiresIn`, schedules a logout at `expiresAt`, and loads the profile.
-- On startup, a stored, non-expired session is restored; an expired one is discarded.
+- The session is kept in `localStorage` under `taskflow.session` as `{ accessToken, expiresAt }` ([ADR 0007](adr/0007-jwt-in-local-storage-without-refresh.md)): on login the store saves the token and `expiresAt = now + expiresIn`, schedules a logout at `expiresAt`, and loads the profile. The profile is not stored; startup reloads it with `GET /api/users/me`.
+- On startup, a stored, non-expired session is restored. A session whose `expiresAt` is already past is discarded, with no notice. A `401` on an authenticated request, including a rejected token while restoring the profile, calls `logout('expired')`.
+- A `401` logs the user out only when that request carried the session token. `POST /api/users/login` answers `401` for wrong credentials, and that response stays a form error.
+- `logout('expired')` opens `/login` with navigation state `{ authNotice: 'sessionExpired' }`. Successful registration opens `/login` with `{ authNotice: 'registered' }` and does not log in. The login page shows the notice once and removes it from history, so a reload or a shared link does not show it again.
 - Guards: `authGuard` protects the board; `guestGuard` keeps logged users away from `/login` and `/register`.
 - In development, the Angular dev server proxies `/api` to the local API, so CORS is not involved.
 
@@ -195,6 +197,8 @@ Feature routes are lazy-loaded. The task dialog is a child route, so the board s
 
 Design tokens (palette and semantic colors such as `--color-accent-text` or `--color-danger`) are CSS custom properties defined per theme. Tailwind utilities reference the tokens, so components never contain raw colors. A small inline script in `index.html` sets the `dark` class on `<html>` before Angular boots, using the saved choice or `prefers-color-scheme`.
 
+In the dark theme, `--color-secondary-text` uses the text color (`#e2c2c6`). Accent text (`#c179b9`) on the surface (`#502274`) is 3.67:1, below WCAG AA, so secondary copy (subtitles, field labels) does not use it. Accent text and icons keep `#c179b9`.
+
 ---
 
 ## 8. Development and CI Topology
@@ -216,6 +220,7 @@ See [ADR 0009](adr/0009-hybrid-e2e-against-real-api.md) for the E2E strategy. Th
 
 ## Document History
 
+- **2026-11-23:** Phase 2 authentication. Section 5 records the authenticated-only `401` logout and the navigation-state notices. Dark secondary text uses `#e2c2c6` (section 7).
 - **2026-11-17:** Phase 1 workspace exists. No deviation from the target architecture. CI notes are in section 8.
 - **2026-11-16:** `SummaryStore` moved from the tasks feature to `core/task-summary/` to respect the dependency rules. Implementation order lives in [specs/](specs/README.md).
 - **2026-11-12:** Initial target architecture.
