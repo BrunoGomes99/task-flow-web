@@ -1,0 +1,26 @@
+<div class="flex items-baseline justify-between gap-3">
+  <label
+    class="text-xs font-semibold tracking-wide text-secondary-text uppercase"
+    [attr.for]="controlId()"
+  >
+    {{ label() }}
+  </label>
+  <ng-content select="[appFormFieldCounter]" />
+</div>
+
+<ng-content />
+
+@if (hint(); as hintText) {
+  <p [id]="hintId" class="text-sm text-secondary-text">{{ hintText }}</p>
+}
+
+@if (errors().length > 0) {
+  <ul [id]="errorId" class="flex list-none flex-col gap-1 p-0 text-sm text-danger">
+    @for (error of errors(); track $index) {
+      <li class="flex items-start gap-1.5">
+        <svg lucideCircleExclamationPoint class="mt-0.5 size-4 shrink-0" />
+        <span>{{ error }}</span>
+      </li>
+    }
+  </ul>
+}

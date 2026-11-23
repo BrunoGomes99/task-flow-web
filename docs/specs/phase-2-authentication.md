@@ -234,8 +234,9 @@ Users can register, log in, stay logged in across reloads, and are logged out wh
 
 ## Definition of Done
 
-- [ ] All steps committed and reviewed.
-- [ ] Lint, unit tests, build and E2E pass; CI green on the PR to `dev`.
-- [ ] `ARCHITECTURE.md` updated if the auth flow differs from section 5 (for example, the navigation-state notices).
-- [ ] `ENGINEERING_GUIDELINES.md`: API integration and forms boxes ticked where now true; Phase 2 checklist added.
-- [ ] New ADR if a hard-to-reverse decision was made.
+- [x] All steps committed and reviewed.
+- [x] Lint, unit tests, build and E2E pass locally.
+- [ ] CI green on the PR to `dev`.
+- [x] `ARCHITECTURE.md` updated: a `401` logs out only when the request carried the token, and the notices travel in the navigation state.
+- [x] `ENGINEERING_GUIDELINES.md`: API integration and forms boxes ticked where now true; Phase 2 checklist added.
+- [x] No new ADR. Session storage, expiry and `401` logout stay in [ADR 0007](../adr/0007-jwt-in-local-storage-without-refresh.md).
