@@ -63,7 +63,7 @@ e2e/
   mocked/                   Edge cases with mocked network
 ```
 
-After Phase 2, `core/api` has the generated types, `ApiError`, the error interceptor and the error codes. `core/auth` has the session store, the auth API and mappers, the auth interceptor and the guards. `features/auth` has the login and register pages. `shared/ui` has the button, form field and alert. `shared/utils` has `applyServerErrors`. `features/tasks` has the placeholder board. `e2e/real` covers register and login. `e2e/mocked` covers the expired session, the guards and axe on the auth screens. `core/layout`, `core/theme`, `core/notifications` and the real board are still the target for later phases.
+After Phase 2, `core/api` has the generated types, `ApiError`, the error interceptor and the error codes. `core/auth` has the session store, the auth API and mappers, the auth interceptor and the guards. `features/auth` has the login and register pages. `shared/ui` has the button, form field, alert and toast. `shared/utils` has `applyServerErrors`. `features/tasks` has the placeholder board. `e2e/real` covers register and login. `e2e/mocked` covers the expired session, the guards and axe on the auth screens. `core/theme` holds the theme store and toggle. `core/notifications` holds the toast store, the outlet mounted in the app root, and `SKIP_ERROR_TOAST`. `core/layout` and the real board are still the target for later steps.
 
 ### Dependency rules
 
@@ -166,12 +166,14 @@ flowchart LR
   ErrInt --> Backend[TaskFlow API]
   ErrInt -->|"ProblemDetails to ApiError"| Service
   ErrInt -->|"401 with Authorization"| Session["SessionStore.logout('expired')"]
+  ErrInt -->|"status 0 or 5xx"| Toasts[ToastStore]
 ```
 
 - Types are generated from `api-contract/openapi.json` ([ADR 0006](adr/0006-api-types-from-versioned-openapi-snapshot.md)); API services map DTOs to models.
 - The session is kept in `localStorage` under `taskflow.session` as `{ accessToken, expiresAt }` ([ADR 0007](adr/0007-jwt-in-local-storage-without-refresh.md)): on login the store saves the token and `expiresAt = now + expiresIn`, schedules a logout at `expiresAt`, and loads the profile. The profile is not stored; startup reloads it with `GET /api/users/me`.
 - On startup, a stored, non-expired session is restored. A session whose `expiresAt` is already past is discarded, with no notice. A `401` on an authenticated request, including a rejected token while restoring the profile, calls `logout('expired')`.
 - A `401` logs the user out only when that request carried the session token. `POST /api/users/login` answers `401` for wrong credentials, and that response stays a form error.
+- Unexpected failures become error toasts. Status `0` shows "Não foi possível conectar ao servidor." Status `5xx` shows "Ocorreu um erro inesperado. Tente novamente." A request opts out with the `SKIP_ERROR_TOAST` `HttpContextToken` when its caller shows a more specific message. `4xx` responses are not toasted; the caller handles them.
 - `logout('expired')` opens `/login` with navigation state `{ authNotice: 'sessionExpired' }`. Successful registration opens `/login` with `{ authNotice: 'registered' }` and does not log in. The login page shows the notice once and removes it from history, so a reload or a shared link does not show it again.
 - Guards: `authGuard` protects the board; `guestGuard` keeps logged users away from `/login` and `/register`.
 - In development, the Angular dev server proxies `/api` to the local API, so CORS is not involved.

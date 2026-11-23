@@ -1,0 +1,13 @@
+<div class="flex w-full max-w-sm flex-col gap-2">
+  @for (toast of toasts(); track toast.id) {
+    @if (toast.kind === 'success') {
+      <div aria-live="polite">
+        <app-toast kind="success" [message]="toast.message" (dismissed)="dismiss(toast.id)" />
+      </div>
+    } @else {
+      <div role="alert">
+        <app-toast kind="error" [message]="toast.message" (dismissed)="dismiss(toast.id)" />
+      </div>
+    }
+  }
+</div>

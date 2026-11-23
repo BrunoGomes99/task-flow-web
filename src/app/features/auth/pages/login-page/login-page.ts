@@ -15,6 +15,7 @@ import { LucideChevronRight } from '@lucide/angular';
 import { ApiError } from '@core/api/api-error';
 import { API_ERROR_CODES } from '@core/api/error-codes';
 import { SessionStore } from '@core/auth/session-store';
+import { ToastStore } from '@core/notifications/toast-store';
 import { ThemeToggle } from '@core/theme/theme-toggle/theme-toggle';
 import { Alert } from '@shared/ui/alert/alert';
 import { Button } from '@shared/ui/button/button';
@@ -50,6 +51,7 @@ interface LoginForm {
 })
 export class LoginPage {
   private readonly sessionStore = inject(SessionStore);
+  private readonly toasts = inject(ToastStore);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private readonly destroyRef = inject(DestroyRef);
@@ -111,6 +113,7 @@ export class LoginPage {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
+          this.showWelcome();
           void this.router.navigate(['/tasks']);
         },
         error: (error: unknown) => {
@@ -118,6 +121,15 @@ export class LoginPage {
           this.showFailure(error);
         },
       });
+  }
+
+  private showWelcome(): void {
+    const name = this.sessionStore.profile()?.name;
+    if (name === undefined || name.length === 0) {
+      return;
+    }
+
+    this.toasts.success(`Bem-vindo(a) de volta, ${name}!`);
   }
 
   private showFailure(error: unknown): void {

@@ -6,9 +6,12 @@ import { render, screen } from '@testing-library/angular';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { of, Subject, throwError } from 'rxjs';
 
+import { signal } from '@angular/core';
+
 import { ApiError } from '@core/api/api-error';
 import { API_ERROR_CODES } from '@core/api/error-codes';
 import { SessionStore } from '@core/auth/session-store';
+import { ToastStore } from '@core/notifications/toast-store';
 
 import { LoginPage } from './login-page';
 
@@ -68,6 +71,7 @@ describe('LoginPage', () => {
       password: 'senha1234',
     });
     expect(TestBed.inject(Router).url).not.toBe('/tasks');
+    expect(TestBed.inject(ToastStore).toasts()).toEqual([]);
   });
 
   it('shows a form-level alert when the request fails for another reason', async () => {
@@ -106,7 +110,7 @@ describe('LoginPage', () => {
     pending.complete();
   });
 
-  it('navigates to the board on success and does not show the welcome toast', async () => {
+  it('navigates to the board and shows the welcome toast with the profile name', async () => {
     const login = vi.fn(() => of(undefined));
     const user = userEvent.setup();
     await renderPage(login);
@@ -116,7 +120,12 @@ describe('LoginPage', () => {
     await user.click(screen.getByRole('button', { name: /acessar dashboard/i }));
 
     expect(navigate).toHaveBeenCalledWith(['/tasks']);
-    expect(screen.queryByText(/bem-vindo/i)).not.toBeInTheDocument();
+    expect(TestBed.inject(ToastStore).toasts()).toEqual([
+      expect.objectContaining({
+        kind: 'success',
+        message: 'Bem-vindo(a) de volta, Maria Souza!',
+      }),
+    ]);
   });
 
   it('shows the registered notice from the navigation state', async () => {
@@ -163,7 +172,20 @@ describe('LoginPage', () => {
 
 async function renderPage(login: SessionStore['login']): Promise<void> {
   await render(LoginPage, {
-    providers: [provideRouter([]), { provide: SessionStore, useValue: { login } }],
+    providers: [
+      provideRouter([]),
+      {
+        provide: SessionStore,
+        useValue: {
+          login,
+          profile: signal({
+            id: '1',
+            name: 'Maria Souza',
+            email: 'maria@exemplo.com',
+          }),
+        },
+      },
+    ],
   });
 }
 
