@@ -1,0 +1,8 @@
+@if (variant() === 'danger') {
+  <svg lucideCircleExclamationPoint class="mt-0.5 size-4 shrink-0" />
+} @else {
+  <svg lucideInfo class="mt-0.5 size-4 shrink-0 text-accent-text" />
+}
+<div class="min-w-0 flex-1">
+  <ng-content />
+</div>

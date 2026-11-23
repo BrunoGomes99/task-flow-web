@@ -1,0 +1,42 @@
+<section class="rounded-2xl border border-border bg-surface px-5 py-8 shadow-sm sm:px-8">
+  <picture class="mx-auto block w-[126px]">
+    <source type="image/webp" srcset="/images/logo.webp 1x, /images/logo@2x.webp 2x" />
+    <img
+      src="/images/logo.png"
+      srcset="/images/logo.png 1x, /images/logo@2x.png 2x"
+      width="126"
+      height="85"
+      alt="TaskFlow"
+      class="mx-auto h-auto w-[126px]"
+    />
+  </picture>
+
+  <p class="mt-3 text-center text-sm text-secondary-text">
+    Gerenciador de Tarefas no estilo Kanban
+  </p>
+
+  <nav class="mt-6 grid grid-cols-2 gap-1 rounded-xl bg-background p-1" aria-label="Autenticação">
+    <a
+      routerLink="/login"
+      routerLinkActive="bg-accent text-white"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+      class="rounded-lg px-3 py-2 text-center text-sm font-semibold text-secondary-text aria-[current=page]:bg-accent aria-[current=page]:text-white"
+    >
+      Entrar
+    </a>
+    <a
+      routerLink="/register"
+      routerLinkActive="bg-accent text-white"
+      [routerLinkActiveOptions]="{ exact: true }"
+      ariaCurrentWhenActive="page"
+      class="rounded-lg px-3 py-2 text-center text-sm font-semibold text-secondary-text aria-[current=page]:bg-accent aria-[current=page]:text-white"
+    >
+      Criar Conta
+    </a>
+  </nav>
+
+  <div class="mt-6">
+    <ng-content />
+  </div>
+</section>
