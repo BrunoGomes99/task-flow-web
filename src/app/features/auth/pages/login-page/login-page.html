@@ -3,8 +3,13 @@
     <h1 class="sr-only">Entrar</h1>
 
     <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()">
-      @if (registeredNotice) {
-        <app-alert>Conta criada com sucesso. Faça login para continuar.</app-alert>
+      @switch (authNotice) {
+        @case ('registered') {
+          <app-alert>Conta criada com sucesso. Faça login para continuar.</app-alert>
+        }
+        @case ('sessionExpired') {
+          <app-alert>Sua sessão expirou. Faça login novamente.</app-alert>
+        }
       }
 
       @if (formError(); as message) {

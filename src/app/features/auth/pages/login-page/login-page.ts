@@ -55,7 +55,7 @@ export class LoginPage {
   protected readonly submitting = signal(false);
   private readonly submitted = signal(false);
   protected readonly formError = signal<string | null>(null);
-  protected readonly registeredNotice = consumeRegisteredNotice(this.router, this.location);
+  protected readonly authNotice = consumeAuthNotice(this.router, this.location);
   private readonly shownErrors: Record<LoginField, readonly string[]> = {
     email: NO_ERRORS,
     password: NO_ERRORS,
@@ -128,25 +128,37 @@ export class LoginPage {
   }
 }
 
-function consumeRegisteredNotice(router: Router, location: Location): boolean {
-  if (!isRegisteredNotice(router.currentNavigation()?.extras.state)) {
-    return false;
+type AuthNotice = 'registered' | 'sessionExpired';
+
+function consumeAuthNotice(router: Router, location: Location): AuthNotice | null {
+  const notice = readAuthNotice(router.currentNavigation()?.extras.state);
+  if (notice === null) {
+    return null;
   }
 
   // A reload restores History.state, and the router copies it into the next
   // navigation. Drop the notice once it has been shown.
   const current = location.getState();
-  if (isRecord(current) && current['authNotice'] === 'registered') {
+  if (isRecord(current) && readAuthNotice(current) === notice) {
     const next = { ...current };
     delete next['authNotice'];
     location.replaceState(location.path(), '', next);
   }
 
-  return true;
+  return notice;
 }
 
-function isRegisteredNotice(state: unknown): boolean {
-  return isRecord(state) && state['authNotice'] === 'registered';
+function readAuthNotice(state: unknown): AuthNotice | null {
+  if (!isRecord(state)) {
+    return null;
+  }
+
+  const notice = state['authNotice'];
+  if (notice === 'registered' || notice === 'sessionExpired') {
+    return notice;
+  }
+
+  return null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -140,6 +140,24 @@ describe('LoginPage', () => {
     expect(state).not.toHaveProperty('authNotice');
     expect(TestBed.inject(Router).url).toBe('/login');
   });
+
+  it('shows the expired-session notice from the navigation state', async () => {
+    await openLogin({ authNotice: 'sessionExpired' });
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Sua sessão expirou. Faça login novamente.',
+    );
+    expect(screen.queryByText(/conta criada com sucesso/i)).not.toBeInTheDocument();
+  });
+
+  it('drops the expired-session notice from history so a reload does not show it again', async () => {
+    await openLogin({ authNotice: 'sessionExpired' });
+
+    const state: unknown = TestBed.inject(Location).getState();
+    expect(state).toEqual(expect.objectContaining({ navigationId: expect.any(Number) }));
+    expect(state).not.toHaveProperty('authNotice');
+    expect(TestBed.inject(Router).url).toBe('/login');
+  });
 });
 
 async function renderPage(login: SessionStore['login']): Promise<void> {

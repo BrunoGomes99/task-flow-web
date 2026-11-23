@@ -35,7 +35,8 @@ html.dark {
   --color-surface: var(--palette-secondary);
   --color-border: var(--palette-accent-text);
   --color-text: var(--palette-text-on-dark);
-  --color-secondary-text: var(--palette-accent-text);
+  /* Accent text (#c179b9) on the surface (#502274) is 3.67:1. Dark text is the palette color that stays WCAG AA. */
+  --color-secondary-text: var(--palette-text-on-dark);
   --color-accent: var(--palette-accent);
   --color-accent-text: var(--palette-accent-text);
   --color-danger: var(--palette-danger-on-dark);
