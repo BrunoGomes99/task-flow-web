@@ -46,12 +46,13 @@ describe('guestGuard', () => {
     expect(heading(harness)).toBe('Entrar');
   });
 
+  // The lazy register chunk evaluates the icon library, which takes longer than the default 5s limit.
   it('lets a guest open /register', async () => {
     const harness = await RouterTestingHarness.create('/register');
 
     expect(TestBed.inject(Router).url).toBe('/register');
     expect(heading(harness)).toBe('Criar Conta');
-  });
+  }, 30_000);
 
   it('sends an authenticated user from /login to /tasks', async () => {
     signIn();

@@ -1,5 +1,52 @@
 <main class="flex min-h-dvh items-center justify-center bg-background px-4 py-8">
   <app-auth-card>
     <h1 class="sr-only">Criar Conta</h1>
+
+    <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()">
+      @if (formError(); as message) {
+        <app-alert variant="danger">{{ message }}</app-alert>
+      }
+
+      <app-form-field label="Nome completo" [errors]="visibleErrors('name')">
+        <input
+          appFormFieldControl
+          type="text"
+          name="name"
+          autocomplete="name"
+          placeholder="Ex: Maria Silva"
+          [formControl]="form.controls.name"
+          class="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text placeholder:text-secondary-text/60"
+        />
+      </app-form-field>
+
+      <app-form-field label="E-mail" [errors]="visibleErrors('email')">
+        <input
+          appFormFieldControl
+          type="email"
+          name="email"
+          autocomplete="email"
+          placeholder="seu.email@exemplo.com"
+          [formControl]="form.controls.email"
+          class="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text placeholder:text-secondary-text/60"
+        />
+      </app-form-field>
+
+      <app-form-field label="Senha" [errors]="visibleErrors('password')">
+        <input
+          appFormFieldControl
+          type="password"
+          name="password"
+          autocomplete="new-password"
+          placeholder="••••••••"
+          [formControl]="form.controls.password"
+          class="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text placeholder:text-secondary-text/60"
+        />
+      </app-form-field>
+
+      <app-button type="submit" class="w-full" [loading]="submitting()">
+        Cadastrar Conta
+        <svg lucideChevronRight class="size-4 shrink-0" aria-hidden="true" />
+      </app-button>
+    </form>
   </app-auth-card>
 </main>
