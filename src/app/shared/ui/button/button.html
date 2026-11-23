@@ -1,0 +1,15 @@
+<button
+  [attr.type]="type()"
+  [disabled]="isDisabled()"
+  [attr.aria-busy]="loading() ? 'true' : null"
+  [class]="buttonClass()"
+>
+  @if (loading()) {
+    <span
+      class="inline-block size-4 shrink-0 animate-spin rounded-full border-2 border-current border-r-transparent"
+      role="status"
+      aria-label="Carregando"
+    ></span>
+  }
+  <ng-content />
+</button>
