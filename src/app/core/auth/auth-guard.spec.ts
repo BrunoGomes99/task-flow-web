@@ -39,12 +39,13 @@ describe('authGuard', () => {
     vi.useRealTimers();
   });
 
+  // The lazy login chunk evaluates the icon library, which takes longer than the default 5s limit.
   it('sends a guest opening /tasks to /login', async () => {
     const harness = await RouterTestingHarness.create('/tasks');
 
     expect(TestBed.inject(Router).url).toBe('/login');
     expect(heading(harness)).toBe('Entrar');
-  });
+  }, 30_000);
 
   it('sends a guest opening / to /login', async () => {
     const harness = await RouterTestingHarness.create('/');
