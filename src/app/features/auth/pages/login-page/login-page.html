@@ -1,49 +1,55 @@
-<main class="flex min-h-dvh items-center justify-center bg-background px-4 py-8">
-  <app-auth-card>
-    <h1 class="sr-only">Entrar</h1>
+<main class="flex min-h-dvh flex-col bg-background px-4 py-4 sm:py-8">
+  <div class="flex justify-end">
+    <app-theme-toggle />
+  </div>
 
-    <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()">
-      @switch (authNotice) {
-        @case ('registered') {
-          <app-alert>Conta criada com sucesso. Faça login para continuar.</app-alert>
+  <div class="flex flex-1 items-center justify-center">
+    <app-auth-card>
+      <h1 class="sr-only">Entrar</h1>
+
+      <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()">
+        @switch (authNotice) {
+          @case ('registered') {
+            <app-alert>Conta criada com sucesso. Faça login para continuar.</app-alert>
+          }
+          @case ('sessionExpired') {
+            <app-alert>Sua sessão expirou. Faça login novamente.</app-alert>
+          }
         }
-        @case ('sessionExpired') {
-          <app-alert>Sua sessão expirou. Faça login novamente.</app-alert>
+
+        @if (formError(); as message) {
+          <app-alert variant="danger">{{ message }}</app-alert>
         }
-      }
 
-      @if (formError(); as message) {
-        <app-alert variant="danger">{{ message }}</app-alert>
-      }
+        <app-form-field label="E-mail" [errors]="visibleErrors('email')">
+          <input
+            appFormFieldControl
+            type="email"
+            name="email"
+            autocomplete="email"
+            placeholder="seu.email@exemplo.com"
+            [formControl]="form.controls.email"
+            class="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text placeholder:text-secondary-text/60"
+          />
+        </app-form-field>
 
-      <app-form-field label="E-mail" [errors]="visibleErrors('email')">
-        <input
-          appFormFieldControl
-          type="email"
-          name="email"
-          autocomplete="email"
-          placeholder="seu.email@exemplo.com"
-          [formControl]="form.controls.email"
-          class="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text placeholder:text-secondary-text/60"
-        />
-      </app-form-field>
+        <app-form-field label="Senha" [errors]="visibleErrors('password')">
+          <input
+            appFormFieldControl
+            type="password"
+            name="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            [formControl]="form.controls.password"
+            class="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text placeholder:text-secondary-text/60"
+          />
+        </app-form-field>
 
-      <app-form-field label="Senha" [errors]="visibleErrors('password')">
-        <input
-          appFormFieldControl
-          type="password"
-          name="password"
-          autocomplete="current-password"
-          placeholder="••••••••"
-          [formControl]="form.controls.password"
-          class="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-text placeholder:text-secondary-text/60"
-        />
-      </app-form-field>
-
-      <app-button type="submit" class="w-full" [loading]="submitting()">
-        Acessar Dashboard
-        <svg lucideChevronRight class="size-4 shrink-0" aria-hidden="true" />
-      </app-button>
-    </form>
-  </app-auth-card>
+        <app-button type="submit" class="w-full" [loading]="submitting()">
+          Acessar Dashboard
+          <svg lucideChevronRight class="size-4 shrink-0" aria-hidden="true" />
+        </app-button>
+      </form>
+    </app-auth-card>
+  </div>
 </main>

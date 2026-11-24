@@ -19,6 +19,7 @@ describe('RegisterPage', () => {
 
     expect(screen.queryByText('O nome é obrigatório.')).not.toBeInTheDocument();
     expect(screen.queryByText(/preencher dados de teste/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ativar tema escuro' })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /cadastrar conta/i }));
 

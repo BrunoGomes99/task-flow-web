@@ -1,10 +1,12 @@
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, HttpContext, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { type MockInstance, vi } from 'vitest';
 
 import { SessionStore } from '../auth/session-store';
+import { SKIP_ERROR_TOAST } from '../notifications/skip-error-toast';
+import { ToastStore } from '../notifications/toast-store';
 import { API_BASE_URL } from './api-base-url';
 import { ApiError } from './api-error';
 import { errorInterceptor } from './error-interceptor';
@@ -83,6 +85,7 @@ describe('errorInterceptor', () => {
       title: ['Informe o título.'],
       dueDate: ['Data inválida.'],
     });
+    expectNoToast();
   });
 
   it('converts a network failure into status 0', () => {
@@ -94,6 +97,7 @@ describe('errorInterceptor', () => {
     expect(error.status).toBe(0);
     expect(error.code).toBe('network.unreachable');
     expect(logout).not.toHaveBeenCalled();
+    expectErrorToast('Não foi possível conectar ao servidor.');
   });
 
   it('logs out and still rethrows when an authenticated request answers 401', () => {
@@ -106,13 +110,14 @@ describe('errorInterceptor', () => {
             { title: 'Unauthorized', status: 401, detail: 'Token inválido.' },
             { status: 401, statusText: 'Unauthorized' },
           ),
-      { Authorization: 'Bearer token-1' },
+      { headers: { Authorization: 'Bearer token-1' } },
     );
 
     const error = expectApiError(captured);
     expect(error.status).toBe(401);
     expect(logout).toHaveBeenCalledTimes(1);
     expect(logout).toHaveBeenCalledWith('expired');
+    expectNoToast();
   });
 
   it('does not log out when login answers 401', () => {
@@ -132,6 +137,7 @@ describe('errorInterceptor', () => {
     expect(error.status).toBe(401);
     expect(error.code).toBe('auth.invalid_credentials');
     expect(logout).not.toHaveBeenCalled();
+    expectNoToast();
   });
 
   it('does not log out when an authenticated request fails with another status', () => {
@@ -144,17 +150,69 @@ describe('errorInterceptor', () => {
             { title: 'Internal Server Error', status: 500 },
             { status: 500, statusText: 'Internal Server Error' },
           ),
-      { Authorization: 'Bearer token-1' },
+      { headers: { Authorization: 'Bearer token-1' } },
     );
 
     expect(expectApiError(captured).status).toBe(500);
     expect(logout).not.toHaveBeenCalled();
+    expectErrorToast('Ocorreu um erro inesperado. Tente novamente.');
   });
 
-  function captureError(url: string, fail: () => void, headers?: Record<string, string>): unknown {
-    let captured: unknown;
+  it('does not toast a 4xx response', () => {
+    const captured = captureError('/api/users/register', () =>
+      httpMock.expectOne('/api/users/register').flush(
+        {
+          title: 'Conflict',
+          status: 409,
+          code: 'user.email_already_in_use',
+        },
+        { status: 409, statusText: 'Conflict' },
+      ),
+    );
 
-    http.post(url, {}, { headers }).subscribe({
+    expect(expectApiError(captured).status).toBe(409);
+    expectNoToast();
+  });
+
+  it('skips the error toast when the request opts out', () => {
+    const captured = captureError(
+      '/api/tasks',
+      () =>
+        httpMock
+          .expectOne('/api/tasks')
+          .flush(
+            { title: 'Internal Server Error', status: 500 },
+            { status: 500, statusText: 'Internal Server Error' },
+          ),
+      { skipErrorToast: true },
+    );
+
+    expect(expectApiError(captured).status).toBe(500);
+    expectNoToast();
+  });
+
+  it('skips the connection toast when the request opts out', () => {
+    const captured = captureError(
+      '/api/tasks',
+      () => httpMock.expectOne('/api/tasks').error(new ProgressEvent('error')),
+      { skipErrorToast: true },
+    );
+
+    expect(expectApiError(captured).status).toBe(0);
+    expectNoToast();
+  });
+
+  function captureError(
+    url: string,
+    fail: () => void,
+    options?: { headers?: Record<string, string>; skipErrorToast?: boolean },
+  ): unknown {
+    let captured: unknown;
+    const context = options?.skipErrorToast
+      ? new HttpContext().set(SKIP_ERROR_TOAST, true)
+      : undefined;
+
+    http.post(url, {}, { headers: options?.headers, context }).subscribe({
       error: (error: unknown) => {
         captured = error;
       },
@@ -165,6 +223,16 @@ describe('errorInterceptor', () => {
     return captured;
   }
 });
+
+function expectErrorToast(message: string): void {
+  expect(TestBed.inject(ToastStore).toasts()).toEqual([
+    expect.objectContaining({ kind: 'error', message }),
+  ]);
+}
+
+function expectNoToast(): void {
+  expect(TestBed.inject(ToastStore).toasts()).toEqual([]);
+}
 
 function expectApiError(error: unknown): ApiError {
   expect(error).toBeInstanceOf(ApiError);

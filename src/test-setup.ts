@@ -4,6 +4,21 @@ import { expect } from 'vitest';
 
 expect.extend(matchers);
 
+// jsdom does not implement matchMedia. The theme store listens to it in the browser.
+if (typeof window.matchMedia !== 'function') {
+  window.matchMedia = (query: string): MediaQueryList =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => false,
+    }) as MediaQueryList;
+}
+
 declare module 'vitest' {
   // Vitest 5's Matchers<R, T> is the extension point. jest-dom still augments the
   // old one-parameter Assertion, which no longer merges. The body is empty because

@@ -1,0 +1,14 @@
+@if (kind() === 'error') {
+  <svg lucideCircleExclamationPoint class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+} @else {
+  <svg lucideCircleCheck class="mt-0.5 size-5 shrink-0 text-accent-text" aria-hidden="true" />
+}
+<p class="min-w-0 flex-1 text-sm font-medium">{{ message() }}</p>
+<button
+  type="button"
+  class="inline-flex size-8 shrink-0 items-center justify-center rounded-lg"
+  aria-label="Fechar"
+  (click)="close()"
+>
+  <svg lucideX class="size-4" aria-hidden="true" />
+</button>
