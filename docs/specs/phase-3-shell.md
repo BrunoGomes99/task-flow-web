@@ -180,9 +180,10 @@ The authenticated layout around the board: sidebar with user card, summary and l
 
 ## Definition of Done
 
-- [ ] All steps committed and reviewed.
-- [ ] Lint, unit tests, build and E2E pass; CI green on the PR to `dev`.
-- [ ] `ARCHITECTURE.md` reflects `core/task-summary/`, the toast policy (`SKIP_ERROR_TOAST`) and the shell routing.
-- [ ] `ENGINEERING_GUIDELINES.md`: Phase 3 checklist added and relevant boxes ticked.
+- [x] All steps committed and reviewed.
+- [x] Lint, unit tests, build and E2E pass locally.
+- [ ] CI green on the PR to `dev`.
+- [x] `ARCHITECTURE.md` reflects `core/task-summary/`, the toast policy (`SKIP_ERROR_TOAST`) and the shell routing.
+- [x] `ENGINEERING_GUIDELINES.md`: Phase 3 checklist added; theming boxes ticked.
 - [ ] Wordmark legibility on the dark sidebar confirmed with the user.
-- [ ] New ADR if a hard-to-reverse decision was made.
+- [x] No new ADR. `SummaryStore` in `core/task-summary/` and `SKIP_ERROR_TOAST` are recorded in this spec and in [ARCHITECTURE.md](../ARCHITECTURE.md). Summary versus column counters stays in [ADR 0003](../adr/0003-board-loads-each-column-independently.md).

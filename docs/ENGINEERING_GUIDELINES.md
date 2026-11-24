@@ -80,9 +80,9 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 
 ### Styling and theming
 
-- [ ] Palette and semantic colors defined once as CSS custom properties per theme; Tailwind utilities consume the tokens. No raw hex colors in templates.
-- [ ] Dark theme via a class on `<html>`, initialized before Angular boots from `localStorage` or `prefers-color-scheme` (no flash of the wrong theme).
-- [ ] Contrast rule: accent text and icons in the dark theme use the `#c179b9` token.
+- [x] Palette and semantic colors defined once as CSS custom properties per theme; Tailwind utilities consume the tokens. No raw hex colors in templates.
+- [x] Dark theme via a class on `<html>`, initialized before Angular boots from `localStorage` or `prefers-color-scheme` (no flash of the wrong theme).
+- [x] Contrast rule: accent text and icons in the dark theme use the `#c179b9` token.
 - [ ] Red only for danger, errors and overdue; always with an icon and text.
 
 ### Accessibility
@@ -143,6 +143,18 @@ Implementation standards for the TaskFlow Angular SPA. Use the checkboxes to tra
 - [x] E2E against the real API for register and login, each with a unique e-mail. Mocked network for the expired session and the guards. Axe on `/login` and `/register` in both themes.
 - [x] Dark secondary text uses `#e2c2c6`, the palette text color that meets WCAG AA on the `#502274` surface.
 
+## Phase 3 — Shell
+
+- [x] Theme store. The initial theme is the `dark` class set by `index.html`. `toggle()` flips the class and saves `taskflow.theme`. Until the user chooses, `prefers-color-scheme` is followed. The toggle sits on the auth screens and in the header, labeled "Ativar tema escuro" / "Ativar tema claro". No toast on toggle.
+- [x] Toast store and outlet in the app root. Success toasts dismiss after 4 seconds, error toasts after 8, at most 3 visible. Success uses `aria-live="polite"`; errors use `role="alert"`.
+- [x] `SKIP_ERROR_TOAST`. The error interceptor toasts "Não foi possível conectar ao servidor." for status `0` and "Ocorreu um erro inesperado. Tente novamente." for `5xx`. `4xx` stays with the caller.
+- [x] Login shows "Bem-vindo(a) de volta, {nome}!".
+- [x] `/tasks` renders in the shell (`authGuard`, lazy tasks routes). Landmarks: `aside`, `header`, `main`.
+- [x] Sidebar: wordmark, WORKSPACE badge, user card (avatar, name, e-mail) and "Sair da Conta" (`SessionStore.logout('user')`, back to `/login` with no expired notice). Initials come from the first and last names.
+- [x] `SummaryStore` in `core/task-summary/`. `GET /api/tasks/summary`. `load()` resets and loads; `refresh()` keeps the current numbers. The shell calls `load()` when it is created. "Suas Tarefas" and "Resumo Geral" show a skeleton while loading and "Não foi possível carregar o resumo" on error.
+- [x] Below `lg`, the sidebar is a drawer opened from the header. It traps focus, closes with Escape, a backdrop click and navigation, and returns focus to the menu button. Small screens show the symbol next to the title.
+- [x] E2E against the real API for the welcome toast, zero counts, theme persistence and logout. Mocked network for a large summary and a `500`. Axe on the shell (desktop, and mobile with the drawer open) and on the auth screens with the toggle, in both themes.
+
 ## CI (GitHub Actions)
 
 - [x] **On PR to `dev` and to `main`:** install, lint, unit tests, build, E2E (Chromium desktop and mobile).
@@ -167,6 +179,7 @@ Add a checklist here at the end of each phase, as its definition of done require
 
 ## Document History
 
+- **2026-11-24:** Phase 3 checklist added. Theming boxes ticked. Red-only, dialogs and the full E2E flows stay open.
 - **2026-11-23:** Phase 2 checklist added. API integration and forms boxes ticked where the auth work made them true. Pagination and the task field validators stay open.
 - **2026-11-17:** Phase 1 and CI checkboxes ticked. CI uses the API `docker-compose.yml` as-is. Cross-browser E2E is manual only.
 - **2026-11-16:** Links to the phase specs in `specs/`.
