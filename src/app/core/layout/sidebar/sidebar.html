@@ -1,0 +1,38 @@
+<aside
+  class="flex h-full min-h-dvh flex-col gap-6 border-r border-border bg-surface px-4 py-5"
+  aria-label="Barra lateral"
+>
+  <div class="flex flex-col items-start gap-2">
+    <picture>
+      <source type="image/webp" srcset="/images/wordmark.webp 1x, /images/wordmark@2x.webp 2x" />
+      <img
+        src="/images/wordmark.png"
+        srcset="/images/wordmark.png 1x, /images/wordmark@2x.png 2x"
+        width="80"
+        height="14"
+        alt="TaskFlow"
+        class="h-auto w-20"
+      />
+    </picture>
+    <p
+      class="rounded-md bg-background px-2 py-0.5 text-xs font-semibold tracking-wider text-secondary-text"
+    >
+      WORKSPACE
+    </p>
+  </div>
+
+  @if (profile(); as profile) {
+    <div class="flex items-center gap-3 rounded-xl border border-border bg-background p-3">
+      <app-avatar [initials]="initials()" />
+      <div class="min-w-0">
+        <p class="truncate text-sm font-semibold">{{ profile.name }}</p>
+        <p class="truncate text-xs text-secondary-text">{{ profile.email }}</p>
+      </div>
+    </div>
+  }
+
+  <app-button class="mt-auto w-full" variant="secondary" (click)="logout()">
+    <svg lucideLogOut class="size-4" aria-hidden="true" />
+    Sair da Conta
+  </app-button>
+</aside>
