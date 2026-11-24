@@ -8,8 +8,8 @@ export const routes: Routes = [
   {
     path: 'tasks',
     canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/tasks/pages/board-page/board-page').then((m) => m.BoardPage),
+    loadComponent: () => import('./core/layout/shell/shell').then((m) => m.Shell),
+    loadChildren: () => import('./features/tasks/tasks.routes').then((m) => m.tasksRoutes),
   },
   { path: '', pathMatch: 'full', redirectTo: '/tasks' },
   { path: '**', redirectTo: '/tasks' },
