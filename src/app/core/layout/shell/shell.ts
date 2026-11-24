@@ -3,7 +3,6 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   ElementRef,
   inject,
@@ -24,6 +23,7 @@ import { Sidebar } from '../sidebar/sidebar';
   selector: 'app-shell',
   imports: [CdkTrapFocus, Header, LucideMenu, RouterOutlet, Sidebar],
   templateUrl: './shell.html',
+  styleUrl: './shell.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'grid min-h-dvh grid-cols-1 bg-background lg:grid-cols-[16rem_minmax(0,1fr)]',
@@ -38,18 +38,6 @@ export class Shell {
   private readonly menuButton = viewChild<ElementRef<HTMLButtonElement>>('menuButton');
 
   protected readonly sidebarOpen = signal(false);
-  protected readonly sidebarPanelClass = computed(() => {
-    const placement = 'col-start-1 row-start-1';
-    if (this.sidebarOpen()) {
-      return [
-        placement,
-        'fixed inset-y-0 left-0 z-40 h-dvh w-64 overflow-y-auto shadow-xl',
-        'lg:static lg:z-auto lg:h-full lg:w-auto lg:overflow-visible lg:shadow-none',
-      ].join(' ');
-    }
-
-    return `${placement} h-full max-lg:hidden`;
-  });
 
   constructor() {
     // A new shell means a new visit to the authenticated layout. Resetting here

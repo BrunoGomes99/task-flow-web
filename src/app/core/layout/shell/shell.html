@@ -1,16 +1,18 @@
-@if (sidebarOpen()) {
-  <button
-    type="button"
-    tabindex="-1"
-    class="fixed inset-0 z-30 col-start-1 row-start-1 bg-text/40 lg:hidden"
-    aria-label="Fechar menu"
-    (click)="closeSidebar()"
-  ></button>
-}
+<button
+  type="button"
+  tabindex="-1"
+  class="fixed inset-0 z-30 col-start-1 row-start-1 bg-text/40 transition-opacity duration-200 ease-out motion-reduce:transition-none lg:hidden"
+  [class.opacity-0]="!sidebarOpen()"
+  [class.pointer-events-none]="!sidebarOpen()"
+  [attr.aria-hidden]="sidebarOpen() ? null : 'true'"
+  aria-label="Fechar menu"
+  (click)="closeSidebar()"
+></button>
 
 <div
   id="app-sidebar"
-  [class]="sidebarPanelClass()"
+  class="drawer col-start-1 row-start-1 h-full max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-40 max-lg:h-dvh max-lg:w-64 max-lg:overflow-y-auto max-lg:shadow-xl"
+  [attr.data-open]="sidebarOpen() ? '' : null"
   [cdkTrapFocus]="sidebarOpen()"
   [cdkTrapFocusAutoCapture]="sidebarOpen()"
   [attr.role]="sidebarOpen() ? 'dialog' : null"
