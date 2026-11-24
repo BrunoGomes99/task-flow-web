@@ -62,6 +62,7 @@ describe('guestGuard', () => {
 
     expect(TestBed.inject(Router).url).toBe('/tasks');
     expect(heading(harness)).toBe('Quadro de Tarefas');
+    flushSummary();
   });
 
   it('sends an authenticated user from /register to /tasks', async () => {
@@ -71,6 +72,7 @@ describe('guestGuard', () => {
 
     expect(TestBed.inject(Router).url).toBe('/tasks');
     expect(heading(harness)).toBe('Quadro de Tarefas');
+    flushSummary();
   });
 });
 
@@ -81,6 +83,12 @@ function signIn(): void {
   store.login({ email: 'ana@example.com', password: 'senha1234' }).subscribe();
   http.expectOne('/api/users/login').flush({ accessToken: 'token-1', expiresIn: 3600 });
   http.expectOne('/api/users/me').flush(profileDto);
+}
+
+function flushSummary(): void {
+  TestBed.inject(HttpTestingController)
+    .expectOne('/api/tasks/summary')
+    .flush({ pending: 0, inProgress: 0, completed: 0, total: 0 });
 }
 
 function heading(harness: RouterTestingHarness): string {

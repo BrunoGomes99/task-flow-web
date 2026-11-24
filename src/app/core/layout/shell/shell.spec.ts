@@ -61,6 +61,14 @@ describe('Shell', () => {
 
     const main = view.getByRole('main');
     expect(within(main).getByRole('heading', { name: 'Quadro de Tarefas' })).toBeInTheDocument();
+
+    TestBed.inject(HttpTestingController)
+      .expectOne('/api/tasks/summary')
+      .flush({ pending: 0, inProgress: 0, completed: 0, total: 0 });
+    TestBed.tick();
+
+    expect(view.getByRole('heading', { name: 'Resumo Geral' })).toBeInTheDocument();
+    expect(view.getAllByText('0')).toHaveLength(4);
   }, 30_000);
 
   it('keeps a slot in the header for the menu button', async () => {

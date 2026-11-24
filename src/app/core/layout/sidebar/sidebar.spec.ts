@@ -9,6 +9,7 @@ import { vi } from 'vitest';
 
 import { API_BASE_URL } from '../../api/api-base-url';
 import { SessionStore } from '../../auth/session-store';
+import { SummaryStore } from '../../task-summary/summary-store';
 import { Sidebar } from './sidebar';
 
 describe('Sidebar', () => {
@@ -65,6 +66,66 @@ describe('Sidebar', () => {
     expect(router.url).toBe('/login');
     expect(TestBed.inject(Location).getState()).not.toHaveProperty('authNotice');
   });
+
+  it('shows zero counts for a user with no tasks', async () => {
+    await renderSidebar();
+    signIn('Bruno Gomes', 'bruno@exemplo.com');
+    TestBed.tick();
+    loadSummary({ pending: 0, inProgress: 0, completed: 0, total: 0 });
+
+    expect(screen.getByRole('heading', { name: 'Resumo Geral' })).toBeInTheDocument();
+    expect(screen.getByText('Suas Tarefas')).toBeInTheDocument();
+    expect(screen.getByText('Pendente')).toBeInTheDocument();
+    expect(screen.getByText('Em Andamento')).toBeInTheDocument();
+    expect(screen.getByText('Concluída')).toBeInTheDocument();
+    expect(screen.getAllByText('0')).toHaveLength(4);
+  });
+
+  it('places each status count on its own row', async () => {
+    await renderSidebar();
+    signIn('Bruno Gomes', 'bruno@exemplo.com');
+    TestBed.tick();
+    loadSummary({ pending: 1, inProgress: 2, completed: 3, total: 6 });
+
+    expect(screen.getByText('Pendente').closest('li')).toHaveTextContent('1');
+    expect(screen.getByText('Em Andamento').closest('li')).toHaveTextContent('2');
+    expect(screen.getByText('Concluída').closest('li')).toHaveTextContent('3');
+    expect(screen.getByText('Suas Tarefas').parentElement).toHaveTextContent('6');
+  });
+
+  it('shows skeletons while the summary is loading', async () => {
+    await renderSidebar();
+    signIn('Bruno Gomes', 'bruno@exemplo.com');
+    TestBed.tick();
+    TestBed.inject(SummaryStore).load();
+    TestBed.tick();
+
+    try {
+      const summary = screen.getByRole('heading', { name: 'Resumo Geral' }).closest('section');
+      expect(summary).toHaveAttribute('aria-busy', 'true');
+      expect(summary).toHaveTextContent('Carregando resumo');
+      expect(screen.getByText('Pendente')).toBeInTheDocument();
+      expect(screen.queryByText('0')).not.toBeInTheDocument();
+    } finally {
+      TestBed.inject(HttpTestingController)
+        .expectOne('/api/tasks/summary')
+        .flush({ pending: 0, inProgress: 0, completed: 0, total: 0 });
+    }
+  });
+
+  it('shows a muted message when the summary fails to load', async () => {
+    await renderSidebar();
+    signIn('Bruno Gomes', 'bruno@exemplo.com');
+    TestBed.tick();
+    loadSummary('error');
+
+    const summary = screen.getByRole('heading', { name: 'Resumo Geral' }).closest('section');
+
+    expect(screen.getByText('Não foi possível carregar o resumo')).toBeInTheDocument();
+    expect(summary).not.toHaveAttribute('aria-busy');
+    expect(summary).not.toHaveTextContent('Carregando resumo');
+    expect(screen.queryByText('Pendente')).not.toBeInTheDocument();
+  });
 });
 
 async function renderSidebar(): Promise<void> {
@@ -76,6 +137,21 @@ async function renderSidebar(): Promise<void> {
       { provide: API_BASE_URL, useValue: '' },
     ],
   });
+}
+
+function loadSummary(
+  body: { pending: number; inProgress: number; completed: number; total: number } | 'error',
+): void {
+  TestBed.inject(SummaryStore).load();
+  const request = TestBed.inject(HttpTestingController).expectOne('/api/tasks/summary');
+
+  if (body === 'error') {
+    request.flush(null, { status: 500, statusText: 'Server Error' });
+  } else {
+    request.flush(body);
+  }
+
+  TestBed.tick();
 }
 
 function signIn(name: string, email: string): void {

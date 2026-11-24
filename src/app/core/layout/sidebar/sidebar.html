@@ -22,14 +22,66 @@
   </div>
 
   @if (profile(); as profile) {
-    <div class="flex items-center gap-3 rounded-xl border border-border bg-background p-3">
-      <app-avatar [initials]="initials()" />
-      <div class="min-w-0">
-        <p class="truncate text-sm font-semibold">{{ profile.name }}</p>
-        <p class="truncate text-xs text-secondary-text">{{ profile.email }}</p>
+    <div class="flex flex-col gap-3 rounded-xl border border-border bg-background p-3">
+      <div class="flex items-center gap-3">
+        <app-avatar [initials]="initials()" />
+        <div class="min-w-0">
+          <p class="truncate text-sm font-semibold">{{ profile.name }}</p>
+          <p class="truncate text-xs text-secondary-text">{{ profile.email }}</p>
+        </div>
+      </div>
+      <div
+        class="flex items-center justify-between gap-3 border-t border-border pt-2 text-xs text-secondary-text"
+      >
+        <span>Suas Tarefas</span>
+        @if (summary(); as summary) {
+          <span class="font-semibold text-text">{{ summary.total }}</span>
+        } @else if (showSkeleton()) {
+          <span
+            class="inline-block h-4 w-6 animate-pulse rounded bg-border"
+            aria-hidden="true"
+          ></span>
+        }
       </div>
     </div>
   }
+
+  <section class="flex flex-col gap-2" [attr.aria-busy]="showSkeleton() ? 'true' : null">
+    <h2 class="text-xs font-semibold tracking-wider text-secondary-text">Resumo Geral</h2>
+    @if (showSkeleton()) {
+      <p class="sr-only" role="status">Carregando resumo</p>
+    }
+    @if (showError()) {
+      <p class="text-xs text-secondary-text">Não foi possível carregar o resumo</p>
+    } @else {
+      <ul class="flex flex-col gap-2">
+        @for (row of rows; track row.status) {
+          <li
+            class="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-2.5 py-2 text-xs"
+          >
+            <span class="flex items-center gap-2">
+              <span
+                class="size-2 shrink-0 rounded-full"
+                [class.bg-status-pending]="row.status === 'pending'"
+                [class.bg-status-in-progress]="row.status === 'inProgress'"
+                [class.bg-status-completed]="row.status === 'completed'"
+                aria-hidden="true"
+              ></span>
+              {{ row.label }}
+            </span>
+            @if (summary(); as summary) {
+              <span class="font-semibold">{{ summary[row.status] }}</span>
+            } @else {
+              <span
+                class="inline-block h-4 w-6 animate-pulse rounded bg-border"
+                aria-hidden="true"
+              ></span>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </section>
 
   <app-button class="mt-auto w-full" variant="secondary" (click)="logout()">
     <svg lucideLogOut class="size-4" aria-hidden="true" />
