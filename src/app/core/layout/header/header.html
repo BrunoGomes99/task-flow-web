@@ -1,0 +1,22 @@
+<header
+  class="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-surface px-4 py-4"
+>
+  <div class="flex min-w-0 items-center gap-3">
+    <ng-content />
+    <picture class="shrink-0 lg:hidden">
+      <source type="image/webp" srcset="/images/symbol.webp 1x, /images/symbol@2x.webp 2x" />
+      <img
+        src="/images/symbol.png"
+        srcset="/images/symbol.png 1x, /images/symbol@2x.png 2x"
+        width="72"
+        height="32"
+        alt="TaskFlow"
+        class="h-8 w-auto"
+      />
+    </picture>
+    <h1 class="min-w-0 truncate text-lg font-bold sm:text-xl sm:tracking-wide">
+      Quadro de Tarefas
+    </h1>
+  </div>
+  <app-theme-toggle />
+</header>

@@ -2,6 +2,7 @@ import { expect, type Page, type Route, test } from '@playwright/test';
 
 import type { ProblemDetails, UserDto } from '../../src/app/core/api/api-models';
 import { expectNoAxeViolations } from '../support/axe';
+import { shellTitle } from '../support/shell';
 import { setTheme, type Theme } from '../support/theme';
 
 /** Same key SessionStore writes: `{ accessToken, expiresAt }`. */
@@ -87,11 +88,15 @@ test('sends a logged-in user from login to the board', async ({ page }) => {
     expect(route.request().headers()['authorization']).toBe('Bearer e2e-valid-token');
     await fulfillJson(route, 200, profile);
   });
+  // The shell loads the summary as soon as it is created. A real 401 would log this fake token out.
+  await page.route('**/api/tasks/summary', async (route) => {
+    await fulfillJson(route, 200, { pending: 0, inProgress: 0, completed: 0, total: 0 });
+  });
 
   await page.goto('/login');
 
   await expect(page).toHaveURL(/\/tasks$/);
-  await expect(page.getByRole('heading', { name: 'Quadro de Tarefas' })).toBeVisible();
+  await expect(shellTitle(page)).toBeVisible();
 });
 
 for (const theme of themes) {
@@ -111,6 +116,7 @@ for (const theme of themes) {
       await expect(
         page.getByLabel(authPage.path === '/register' ? 'Nome completo' : 'E-mail'),
       ).toBeVisible();
+      await expect(page.getByRole('button', { name: /Ativar tema/ })).toBeVisible();
       await expectNoAxeViolations(page);
     });
   }

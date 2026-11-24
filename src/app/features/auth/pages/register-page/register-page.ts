@@ -14,6 +14,7 @@ import { LucideChevronRight } from '@lucide/angular';
 import { ApiError } from '@core/api/api-error';
 import { API_ERROR_CODES } from '@core/api/error-codes';
 import { AuthApi } from '@core/auth/auth-api';
+import { ThemeToggle } from '@core/theme/theme-toggle/theme-toggle';
 import { Alert } from '@shared/ui/alert/alert';
 import { Button } from '@shared/ui/button/button';
 import { FormField, FormFieldControl } from '@shared/ui/form-field/form-field';
@@ -46,6 +47,7 @@ interface RegisterForm {
     FormFieldControl,
     Alert,
     Button,
+    ThemeToggle,
     LucideChevronRight,
   ],
   templateUrl: './register-page.html',

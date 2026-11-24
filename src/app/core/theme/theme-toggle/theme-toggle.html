@@ -1,0 +1,12 @@
+<button
+  type="button"
+  class="inline-flex size-10 items-center justify-center rounded-lg border border-border bg-surface text-accent-text hover:bg-background"
+  [attr.aria-label]="label()"
+  (click)="toggle()"
+>
+  @if (theme() === 'dark') {
+    <svg lucideSun class="size-5" aria-hidden="true" />
+  } @else {
+    <svg lucideMoon class="size-5" aria-hidden="true" />
+  }
+</button>

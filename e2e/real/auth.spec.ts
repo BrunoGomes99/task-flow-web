@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 
+import { shellTitle } from '../support/shell';
 import { uniqueEmail } from '../support/unique-email';
 
 const password = 'senha1234';
@@ -20,12 +21,12 @@ test('registers a unique user, shows the notice, logs in, and keeps the session 
   await page.getByRole('button', { name: 'Acessar Dashboard' }).click();
 
   await expect(page).toHaveURL(/\/tasks$/);
-  await expect(page.getByRole('heading', { name: 'Quadro de Tarefas' })).toBeVisible();
+  await expect(shellTitle(page)).toBeVisible();
 
   await page.reload();
 
   await expect(page).toHaveURL(/\/tasks$/);
-  await expect(page.getByRole('heading', { name: 'Quadro de Tarefas' })).toBeVisible();
+  await expect(shellTitle(page)).toBeVisible();
 });
 
 test('shows an inline message for a wrong password and keeps the typed e-mail', async ({

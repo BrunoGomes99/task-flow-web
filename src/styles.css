@@ -24,6 +24,25 @@ html {
   background-color: var(--color-background);
   color: var(--color-text);
   color-scheme: light;
+  transition:
+    --color-background 200ms ease,
+    --color-surface 200ms ease,
+    --color-border 200ms ease,
+    --color-text 200ms ease,
+    --color-secondary-text 200ms ease,
+    --color-accent 200ms ease,
+    --color-accent-text 200ms ease,
+    --color-danger 200ms ease,
+    --color-focus-ring 200ms ease,
+    --color-status-pending 200ms ease,
+    --color-status-in-progress 200ms ease,
+    --color-status-completed 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
 }
 
 html.dark {

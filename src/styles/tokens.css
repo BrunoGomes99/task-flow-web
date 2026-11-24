@@ -2,7 +2,82 @@
  * Palette from PROJECT_SPEC section 6. Status colors stay on these tones.
  * The prototype's amber and emerald are off-palette and are not used.
  * The danger values are the prototype's red-500 and red-400, and the only reds.
+ *
+ * @property initial-value must be a color literal, so it repeats the light token.
+ * That registration is what lets the theme crossfade instead of snapping.
  */
+@property --color-background {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f8f4f9;
+}
+
+@property --color-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
+@property --color-border {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e2c2c6;
+}
+
+@property --color-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #2f242c;
+}
+
+@property --color-secondary-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #502274;
+}
+
+@property --color-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #a42cd6;
+}
+
+@property --color-accent-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #a42cd6;
+}
+
+@property --color-danger {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ef4444;
+}
+
+@property --color-focus-ring {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #a42cd6;
+}
+
+@property --color-status-pending {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #502274;
+}
+
+@property --color-status-in-progress {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #a42cd6;
+}
+
+@property --color-status-completed {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c179b9;
+}
+
 :root {
   --palette-background-light: #f8f4f9;
   --palette-surface-light: #ffffff;
