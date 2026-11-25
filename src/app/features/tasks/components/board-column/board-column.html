@@ -1,0 +1,63 @@
+<section class="flex h-full min-h-0 flex-col" [attr.aria-labelledby]="headingId">
+  <header class="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
+    <div class="flex min-w-0 items-center gap-2">
+      <span
+        class="size-2 shrink-0 rounded-full"
+        [class.bg-status-pending]="status() === 'pending'"
+        [class.bg-status-in-progress]="status() === 'inProgress'"
+        [class.bg-status-completed]="status() === 'completed'"
+        aria-hidden="true"
+      ></span>
+      <h2 [id]="headingId" class="text-sm font-bold tracking-wide">{{ label() }}</h2>
+      @if (status() === 'completed') {
+        <button
+          type="button"
+          class="inline-flex rounded-md p-1 text-accent-text"
+          [appTooltip]="lockedHint"
+          aria-label="Informações sobre tarefas concluídas"
+        >
+          <svg lucideInfo class="size-4" aria-hidden="true" />
+        </button>
+      }
+    </div>
+    <app-badge variant="status">{{ count() }}</app-badge>
+  </header>
+
+  <div class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3">
+    @if (loading()) {
+      <div role="status" aria-busy="true" aria-label="Carregando tarefas">
+        @for (row of skeletonRows; track row) {
+          <div
+            class="mb-3 h-24 animate-pulse rounded-xl border border-border bg-surface"
+            aria-hidden="true"
+          ></div>
+        }
+      </div>
+    } @else if (error()) {
+      <div class="flex flex-col items-start gap-3">
+        <app-alert variant="danger">Não foi possível carregar esta coluna.</app-alert>
+        <app-button class="self-start" variant="secondary" (click)="retryLoad()">
+          Tentar novamente
+        </app-button>
+      </div>
+    } @else if (tasks().length === 0) {
+      <div
+        class="flex h-40 items-center justify-center rounded-xl border border-dashed border-border p-4 text-center"
+      >
+        <p class="text-xs font-medium text-secondary-text">Nenhuma tarefa nesta coluna</p>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-3" role="list">
+        @for (task of tasks(); track task.id) {
+          <div role="listitem">
+            <app-task-card [task]="task" [now]="now()" />
+          </div>
+        }
+      </div>
+    }
+
+    <div class="shrink-0">
+      <ng-content />
+    </div>
+  </div>
+</section>
