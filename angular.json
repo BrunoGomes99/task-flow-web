@@ -87,6 +87,7 @@
         "test": {
           "builder": "@angular/build:unit-test",
           "options": {
+            "runnerConfig": "vitest-base.config.mjs",
             "setupFiles": ["src/test-setup.ts"],
             "providersFile": "src/test-providers.ts"
           }
