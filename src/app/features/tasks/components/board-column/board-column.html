@@ -58,6 +58,18 @@
 
     <div class="shrink-0">
       <ng-content />
+      @if (loadingMore() && !loading()) {
+        <p role="status" class="text-center text-xs font-medium text-secondary-text">
+          Carregando mais...
+        </p>
+      }
+      <div
+        appInfiniteScroll
+        class="h-px"
+        aria-hidden="true"
+        [disabled]="infiniteScrollDisabled()"
+        (reached)="requestNextPage()"
+      ></div>
     </div>
   </div>
 </section>
