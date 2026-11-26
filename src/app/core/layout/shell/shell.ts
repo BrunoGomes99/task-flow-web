@@ -26,7 +26,8 @@ import { Sidebar } from '../sidebar/sidebar';
   styleUrl: './shell.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'grid min-h-dvh grid-cols-1 bg-background lg:grid-cols-[16rem_minmax(0,1fr)]',
+    class:
+      'grid h-dvh grid-cols-1 overflow-hidden bg-background lg:grid-cols-[16rem_minmax(0,1fr)]',
     '(document:keydown.escape)': 'onEscape($event)',
   },
 })

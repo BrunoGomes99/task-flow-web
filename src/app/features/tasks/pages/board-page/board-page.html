@@ -1,1 +1,21 @@
-<h1>Quadro de Tarefas</h1>
+<app-filters-bar [filters]="filters()" (filtersChange)="onFiltersChange($event)" />
+
+<div
+  class="flex min-h-0 flex-1 snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-4 pb-4 md:px-6"
+>
+  @for (column of columns(); track column.status) {
+    <app-board-column
+      class="h-full w-[85vw] shrink-0 snap-center md:w-auto md:min-w-0 md:flex-1 md:shrink"
+      [status]="column.status"
+      [tasks]="column.items"
+      [count]="column.totalCount"
+      [now]="now"
+      [loading]="column.loading"
+      [loadingMore]="column.loadingMore"
+      [error]="column.error"
+      [hasMore]="column.hasMore"
+      (retry)="retry(column.status)"
+      (loadMore)="loadMore(column.status)"
+    />
+  }
+</div>
