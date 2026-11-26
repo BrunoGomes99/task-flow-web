@@ -1,0 +1,31 @@
+<article class="rounded-xl border border-border bg-surface p-4">
+  <div class="mb-2 flex items-start justify-between gap-2">
+    <h3 class="min-w-0 flex-1 line-clamp-2 text-sm font-bold">{{ task().title }}</h3>
+    @if (locked()) {
+      <span
+        class="inline-flex shrink-0 items-center rounded-md border border-border p-1 text-accent-text"
+        role="img"
+        aria-label="Concluída (Travada)"
+      >
+        <svg lucideLock class="size-3.5" aria-hidden="true" />
+      </span>
+    }
+  </div>
+
+  @if (description(); as description) {
+    <p class="mb-3 line-clamp-3 text-xs leading-relaxed whitespace-pre-line text-secondary-text">
+      {{ description }}
+    </p>
+  }
+
+  <div class="border-t border-border pt-2">
+    <app-badge [variant]="dueVariant()">
+      @if (overdue()) {
+        <svg lucideCircleExclamationPoint class="size-3.5 shrink-0" aria-hidden="true" />
+      } @else {
+        <svg lucideCalendar class="size-3.5 shrink-0" aria-hidden="true" />
+      }
+      {{ dueLabel() }}
+    </app-badge>
+  </div>
+</article>

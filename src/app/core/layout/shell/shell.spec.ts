@@ -50,7 +50,7 @@ describe('Shell', () => {
   });
 
   // The shell header loads the icon library through the theme toggle.
-  it('renders the header and the board placeholder in the outlet', async () => {
+  it('renders the header and the board in the outlet', async () => {
     signIn();
 
     const harness = await RouterTestingHarness.create('/tasks');
@@ -60,21 +60,29 @@ describe('Shell', () => {
     }
 
     const view = within(root);
-    const header = view.getByRole('banner');
+    const title = view.getByRole('heading', { name: 'Quadro de Tarefas' });
+    const header = title.closest('header');
+    if (header === null) {
+      throw new Error('O título não está no cabeçalho.');
+    }
     expect(within(header).getByRole('heading', { name: 'Quadro de Tarefas' })).toBeInTheDocument();
     expect(within(header).getByRole('button', { name: /Ativar tema/ })).toBeInTheDocument();
     expect(view.getByRole('complementary', { name: 'Barra lateral' })).toBeInTheDocument();
 
     const main = view.getByRole('main');
-    expect(within(main).getByRole('heading', { name: 'Quadro de Tarefas' })).toBeInTheDocument();
+    expect(within(main).getByRole('textbox', { name: 'Filtrar por título' })).toBeInTheDocument();
+    expect(within(main).getByRole('heading', { name: 'Pendente' })).toBeInTheDocument();
+    expect(within(main).getByRole('heading', { name: 'Em Andamento' })).toBeInTheDocument();
+    expect(within(main).getByRole('heading', { name: 'Concluída' })).toBeInTheDocument();
 
     TestBed.inject(HttpTestingController)
       .expectOne('/api/tasks/summary')
       .flush({ pending: 0, inProgress: 0, completed: 0, total: 0 });
     TestBed.tick();
 
-    expect(view.getByRole('heading', { name: 'Resumo Geral' })).toBeInTheDocument();
-    expect(view.getAllByText('0')).toHaveLength(4);
+    const sidebar = view.getByRole('complementary', { name: 'Barra lateral' });
+    expect(within(sidebar).getByRole('heading', { name: 'Resumo Geral' })).toBeInTheDocument();
+    expect(within(sidebar).getAllByText('0')).toHaveLength(4);
   }, 30_000);
 
   it('keeps a slot in the header for the menu button', async () => {

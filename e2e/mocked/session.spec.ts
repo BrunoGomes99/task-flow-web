@@ -92,6 +92,10 @@ test('sends a logged-in user from login to the board', async ({ page }) => {
   await page.route('**/api/tasks/summary', async (route) => {
     await fulfillJson(route, 200, { pending: 0, inProgress: 0, completed: 0, total: 0 });
   });
+  // The board lists every column. A real 401 on this fake token would log the user out.
+  await page.route(/\/api\/tasks\?/, async (route) => {
+    await fulfillJson(route, 200, { items: [], pageNumber: 1, pageSize: 20, totalCount: 0 });
+  });
 
   await page.goto('/login');
 

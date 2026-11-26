@@ -1,0 +1,58 @@
+<button
+  #trigger
+  type="button"
+  class="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 py-2 text-sm font-semibold"
+  [id]="buttonId"
+  aria-haspopup="listbox"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="open() ? listboxId : null"
+  (click)="toggle()"
+>
+  {{ label() }}
+  <svg lucideChevronDown class="size-4 shrink-0 text-accent-text" aria-hidden="true" />
+</button>
+
+<ng-template #panel>
+  <div
+    class="min-w-56 rounded-xl border border-border bg-surface p-1 shadow-md"
+    cdkTrapFocus
+    cdkTrapFocusAutoCapture
+  >
+    <div
+      cdkListbox
+      cdkListboxMultiple
+      cdkListboxOrientation="vertical"
+      cdkListboxNavigatesDisabledOptions
+      class="flex flex-col gap-0.5 outline-none"
+      [id]="listboxId"
+      [attr.aria-labelledby]="buttonId"
+      [cdkListboxValue]="selection()"
+      (cdkListboxValueChange)="onSelectionChange($event)"
+    >
+      @for (option of options(); track option.value) {
+        <div
+          class="flex items-center gap-2 rounded-lg px-2 py-2 text-sm aria-disabled:cursor-not-allowed aria-disabled:opacity-60 focus-visible:bg-background"
+          cdkOption
+          [cdkOption]="option.value"
+          [cdkOptionDisabled]="lockedValue() === option.value"
+          [attr.aria-describedby]="lockedValue() === option.value ? hintId : null"
+        >
+          <span
+            class="flex size-4 shrink-0 items-center justify-center rounded border border-border"
+            [class.border-accent]="isSelected(option.value)"
+            [class.bg-accent]="isSelected(option.value)"
+            aria-hidden="true"
+          >
+            @if (isSelected(option.value)) {
+              <svg lucideCheck class="size-3 text-white" aria-hidden="true" />
+            }
+          </span>
+          {{ option.label }}
+        </div>
+      }
+    </div>
+    @if (lockedValue()) {
+      <p [id]="hintId" class="px-2 py-1 text-xs text-secondary-text">{{ lockedHint() }}</p>
+    }
+  </div>
+</ng-template>

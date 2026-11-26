@@ -1,7 +1,9 @@
 /*
  * Palette from PROJECT_SPEC section 6. Status colors stay on these tones.
  * The prototype's amber and emerald are off-palette and are not used.
- * The danger values are the prototype's red-500 and red-400, and the only reds.
+ * Danger is the only red. The prototype's red-500 (#ef4444) and red-400 (#f87171)
+ * miss WCAG AA for 12px text: 3.76:1 on white and 4.16:1 on the dark surface.
+ * #cc2f2f and #ff8282 clear 4.5:1 on the page background and on the surface.
  *
  * @property initial-value must be a color literal, so it repeats the light token.
  * That registration is what lets the theme crossfade instead of snapping.
@@ -51,7 +53,7 @@
 @property --color-danger {
   syntax: '<color>';
   inherits: true;
-  initial-value: #ef4444;
+  initial-value: #cc2f2f;
 }
 
 @property --color-focus-ring {
@@ -88,8 +90,8 @@
   --palette-accent: #a42cd6;
   --palette-accent-text: #c179b9;
   --palette-text-on-dark: #e2c2c6;
-  --palette-danger: #ef4444;
-  --palette-danger-on-dark: #f87171;
+  --palette-danger: #cc2f2f;
+  --palette-danger-on-dark: #ff8282;
 
   --color-background: var(--palette-background-light);
   --color-surface: var(--palette-surface-light);
