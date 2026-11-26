@@ -1,6 +1,11 @@
 import { expect, type Page, type Route, test } from '@playwright/test';
 
-import type { ProblemDetails, TaskSummaryDto, UserDto } from '../../src/app/core/api/api-models';
+import type {
+  PagedTaskDto,
+  ProblemDetails,
+  TaskSummaryDto,
+  UserDto,
+} from '../../src/app/core/api/api-models';
 import { expectNoAxeViolations } from '../support/axe';
 import {
   expectSummaryCounts,
@@ -33,6 +38,13 @@ const emptySummary = {
   completed: 0,
   total: 0,
 } satisfies TaskSummaryDto;
+
+const emptyTasks = {
+  items: [],
+  pageNumber: 1,
+  pageSize: 20,
+  totalCount: 0,
+} satisfies PagedTaskDto;
 
 const serverError = {
   type: 'about:blank',
@@ -101,6 +113,10 @@ async function openShell(page: Page, summary: TaskSummaryDto | 'error'): Promise
     }
 
     await fulfillJson(route, 200, summary);
+  });
+  // The board lists every column. A real 401 on this fake token would log the user out.
+  await page.route(/\/api\/tasks\?/, async (route) => {
+    await fulfillJson(route, 200, emptyTasks);
   });
 
   await page.goto('/tasks');

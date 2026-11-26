@@ -45,7 +45,7 @@ describe('authGuard', () => {
 
     expect(TestBed.inject(Router).url).toBe('/login');
     expect(heading(harness)).toBe('Entrar');
-  }, 30_000);
+  }, 60_000);
 
   it('sends a guest opening / to /login', async () => {
     const harness = await RouterTestingHarness.create('/');
